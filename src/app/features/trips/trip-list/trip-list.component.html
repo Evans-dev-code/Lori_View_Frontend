@@ -1,0 +1,190 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Trips</h1>
+      <p>{{ trips.length }} total ·
+         {{ ongoingCount }} ongoing ·
+         {{ completedCount }} completed</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn-primary" (click)="showStartForm = !showStartForm">
+        <mat-icon>{{ showStartForm ? 'close' : 'add' }}</mat-icon>
+        {{ showStartForm ? 'Cancel' : 'Start trip' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Start trip form -->
+  <div class="start-trip-panel" *ngIf="showStartForm">
+    <div class="lv-card">
+      <div class="card-header">
+        <h3>Start a new trip</h3>
+      </div>
+      <div class="card-body">
+
+        <!-- Quick route buttons -->
+        <div class="quick-routes">
+          <div class="qr-label">Quick routes:</div>
+          <div class="qr-list">
+            <button *ngFor="let r of commonRoutes"
+                    class="qr-btn"
+                    (click)="fillRoute(r.from, r.to)">
+              {{ r.from }} → {{ r.to }}
+            </button>
+          </div>
+        </div>
+
+        <form [formGroup]="startForm" (ngSubmit)="startTrip()">
+          <div class="start-form-row">
+
+            <div class="lv-field">
+              <label>Truck *</label>
+              <select formControlName="truckId">
+                <option value="">Select truck</option>
+                <option *ngFor="let t of trucks"
+                        [value]="t.id">
+                  {{ t.plateNumber }} — {{ t.make }} {{ t.model }}
+                </option>
+              </select>
+            </div>
+
+            <div class="lv-field">
+              <label>Origin *</label>
+              <input type="text" formControlName="origin"
+                     placeholder="e.g. Mombasa Port"/>
+            </div>
+
+            <div class="lv-field">
+              <label>Destination *</label>
+              <input type="text" formControlName="destination"
+                     placeholder="e.g. Kampala ICD"/>
+            </div>
+
+            <div class="start-action">
+              <button type="submit" class="btn-primary"
+                      [disabled]="starting">
+                <mat-icon *ngIf="!starting">play_arrow</mat-icon>
+                <mat-icon *ngIf="starting" class="spin">autorenew</mat-icon>
+                {{ starting ? 'Starting…' : 'Start trip' }}
+              </button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <mat-icon>search</mat-icon>
+      <input type="text"
+             placeholder="Search by route or truck plate…"
+             [value]="search"
+             (input)="onSearch($any($event.target).value)"/>
+    </div>
+    <div class="status-tabs">
+      <button *ngFor="let s of statuses"
+              class="status-tab"
+              [class.active]="filterStatus === s"
+              (click)="onStatusFilter(s)">
+        {{ s === 'ALL' ? 'All' : (s | titlecase) }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <!-- Empty -->
+  <div class="lv-card" *ngIf="!loading && filtered.length === 0">
+    <div class="empty-state padded">
+      <div class="es-icon">🗺️</div>
+      <div class="es-title">No trips found</div>
+      <div class="es-desc">
+        {{ trips.length === 0
+           ? 'Start your first trip to see it here.'
+           : 'No trips match your filter.' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Trips table -->
+  <div class="lv-card" *ngIf="!loading && filtered.length > 0">
+    <div class="lv-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Truck</th>
+            <th>Route</th>
+            <th>Driver</th>
+            <th>Started</th>
+            <th>Duration</th>
+            <th>Distance</th>
+            <th>Fuel</th>
+            <th>Efficiency</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let trip of filtered"
+              (click)="viewTrip(trip.id)"
+              class="clickable-row">
+
+            <td>
+              <span class="plate-badge">
+                {{ trip.plateNumber || '—' }}
+              </span>
+            </td>
+
+            <td>
+              <div class="route-col">
+                <div class="rc-from">{{ trip.origin }}</div>
+                <div class="rc-arrow">↓</div>
+                <div class="rc-to">{{ trip.destination }}</div>
+              </div>
+            </td>
+
+            <td>{{ trip.driverName || '—' }}</td>
+            <td>{{ formatDate(trip.startedAt) }}</td>
+
+            <td>
+              {{ trip.endedAt
+                 ? duration(trip.startedAt, trip.endedAt)
+                 : '—' }}
+            </td>
+
+            <td>
+              {{ trip.distanceKm
+                 ? (trip.distanceKm | number:'1.0-0') + ' km'
+                 : '—' }}
+            </td>
+
+            <td>
+              {{ trip.fuelUsedL
+                 ? (trip.fuelUsedL | number:'1.1-1') + ' L'
+                 : '—' }}
+            </td>
+
+            <td>
+              {{ trip.fuelEfficiencyKmL
+                 ? (trip.fuelEfficiencyKmL | number:'1.1-1') + ' km/L'
+                 : '—' }}
+            </td>
+
+            <td>
+              <span class="badge" [class]="trip.status.toLowerCase()">
+                {{ trip.status | titlecase }}
+              </span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

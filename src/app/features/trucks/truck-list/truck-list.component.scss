@@ -1,0 +1,160 @@
+.page-container { padding: 24px; max-width: 1400px; margin: 0 auto;
+  @media (max-width: 768px) { padding: 16px; }
+}
+
+// Filter bar
+.filter-bar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+
+.search-wrap {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 14px; flex: 1; min-width: 220px;
+
+  mat-icon { color: var(--text-muted); font-size: 18px; flex-shrink: 0; }
+
+  input {
+    background: none; border: none; outline: none;
+    font-size: 14px; font-family: 'Outfit', sans-serif;
+    color: var(--text-primary); padding: 10px 0; width: 100%;
+    &::placeholder { color: var(--text-muted); }
+  }
+}
+
+.status-tabs {
+  display: flex; gap: 6px;
+}
+
+.status-tab {
+  padding: 8px 14px; border-radius: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  transition: all 0.2s;
+
+  &.active, &:hover {
+    background: var(--amber-dim);
+    border-color: rgba(245,158,11,0.3);
+    color: var(--amber);
+  }
+}
+
+// Truck grid
+.truck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+.truck-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; cursor: pointer;
+  transition: all 0.25s;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+  }
+}
+
+.tc-head {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid var(--border);
+
+  .tc-plate {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 800;
+    color: var(--text-primary); letter-spacing: 0.5px;
+  }
+}
+
+.tc-body { padding: 16px 18px; }
+
+.tc-make {
+  font-size: 14px; color: var(--text-secondary);
+  margin-bottom: 14px; font-weight: 400;
+}
+
+.tc-fuel {
+  margin-bottom: 14px;
+
+  .tf-top {
+    display: flex; justify-content: space-between;
+    margin-bottom: 7px;
+  }
+  .tf-label { font-size: 12px; color: var(--text-muted); }
+  .tf-val   { font-size: 12px; font-weight: 600; }
+
+  .tf-track {
+    height: 6px; border-radius: 3px;
+    background: var(--border); overflow: hidden;
+  }
+  .tf-fill {
+    height: 100%; border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+}
+
+.tc-meta {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+
+.tc-meta-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--text-muted);
+
+  mat-icon { font-size: 15px; width: 15px; height: 15px; }
+}
+
+.tc-foot {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface2);
+}
+
+.icon-action {
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted); padding: 6px;
+  border-radius: 8px; display: flex; align-items: center;
+  transition: all 0.2s;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+
+  &:hover { background: var(--bg-surface); color: var(--text-primary); }
+  &.danger:hover { background: var(--danger-dim); color: var(--danger); }
+}
+
+.tc-view-btn {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  font-size: 13px; font-weight: 600; color: var(--amber);
+  font-family: 'Outfit', sans-serif;
+  transition: gap 0.2s;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover { gap: 8px; }
+}
+
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px 24px; gap: 8px; text-align: center;
+
+  &.padded { padding: 60px 24px; }
+  .es-icon  { font-size: 44px; margin-bottom: 4px; }
+  .es-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .es-desc  { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+}

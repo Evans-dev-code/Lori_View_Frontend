@@ -1,0 +1,613 @@
+<div class="auth-shell">
+
+  <!-- LEFT — scrollable benefits panel -->
+  <aside class="insight-panel">
+    <div class="insight-scroll">
+
+      <div class="grid-bg"></div>
+      <div class="blob blob-top"></div>
+      <div class="blob blob-btm"></div>
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="logomark">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+            <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+                  stroke="#fff" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+            <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+          </svg>
+        </div>
+        <span class="brand-name">LoriView</span>
+        <span class="brand-tag">Fleet Intelligence</span>
+      </div>
+
+      <!-- Trial highlight -->
+      <div class="trial-hero">
+        <div class="trial-badge-big">
+          <span class="tb-days">14</span>
+          <span class="tb-text">Day Free Trial</span>
+        </div>
+        <h1>
+          Start monitoring<br>
+          your fleet<br>
+          <em>today.</em>
+        </h1>
+        <p>
+          Join hundreds of fleet owners across Kenya, Uganda and Tanzania
+          who use LoriView to protect their trucks, cut fuel costs and
+          stay in control of every journey.
+        </p>
+      </div>
+
+      <!-- What's included -->
+      <div class="section-block">
+        <div class="section-label">What's included in your trial</div>
+        <div class="trial-features">
+          <div *ngFor="let f of trialFeatures" class="tf-item">
+            <span class="tf-check">✓</span>
+            <span>{{ f }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits list -->
+      <div class="section-block">
+        <div class="section-label">Everything you get with LoriView</div>
+        <div class="benefit-list">
+          <div *ngFor="let b of benefits; let i = index"
+               class="benefit-item"
+               [style.animation-delay]="(i * 0.07) + 's'">
+            <span class="b-icon">{{ b.icon }}</span>
+            <span class="b-text">{{ b.text }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="section-block">
+        <div class="section-label">How it works</div>
+        <div class="steps-visual">
+          <div class="step-v">
+            <div class="sv-num">1</div>
+            <div class="sv-body">
+              <div class="sv-title">Create your account</div>
+              <div class="sv-desc">Takes 60 seconds. No card needed.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num">2</div>
+            <div class="sv-body">
+              <div class="sv-title">Install a GPS tracker</div>
+              <div class="sv-desc">Plug in a Teltonika device. Register the IMEI.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num">3</div>
+            <div class="sv-body">
+              <div class="sv-title">Start tracking</div>
+              <div class="sv-desc">Live map, alerts and analytics — immediate.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num sv-amber">4</div>
+            <div class="sv-body">
+              <div class="sv-title">Subscribe via M-Pesa</div>
+              <div class="sv-desc">Pay monthly via STK push. Cancel any time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social proof numbers -->
+      <div class="numbers-bar">
+        <div class="num-item">
+          <span class="num-val">500+</span>
+          <span class="num-lbl">Fleet owners</span>
+        </div>
+        <div class="num-sep"></div>
+        <div class="num-item">
+          <span class="num-val">8,000+</span>
+          <span class="num-lbl">Trucks tracked</span>
+        </div>
+        <div class="num-sep"></div>
+        <div class="num-item">
+          <span class="num-val">3 countries</span>
+          <span class="num-lbl">Kenya · Uganda · TZ</span>
+        </div>
+      </div>
+
+      <!-- Payment note -->
+      <div class="payment-note">
+        <div class="pn-icon">📱</div>
+        <div class="pn-text">
+          <strong>Pay via M-Pesa</strong> after your trial.
+          No bank card, no international fees. Just an STK push to your phone.
+        </div>
+      </div>
+
+      <div class="insight-footer">
+        © 2026 LoriView · Built for East Africa
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- RIGHT — sticky register form -->
+  <main class="form-panel">
+
+    <!-- Mobile brand -->
+    <div class="mobile-brand">
+      <svg width="30" height="30" viewBox="0 0 38 38" fill="none">
+        <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+        <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+              stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+        <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+      </svg>
+      <span>LoriView</span>
+    </div>
+
+    <div class="form-box">
+
+      <div class="form-head">
+        <h2>Create your account</h2>
+        <p>Start your free 14-day trial — no credit card required</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <!-- Full name -->
+        <div class="field">
+          <label>Full name</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('fullName')?.invalid
+                                  && registerForm.get('fullName')?.touched">
+            <mat-icon>person_outline</mat-icon>
+            <input type="text" formControlName="fullName"
+                   placeholder="James Kamau"
+                   autocomplete="name"/>
+          </div>
+          <span class="err" *ngIf="err('fullName')">{{ err('fullName') }}</span>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label>Email address</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('email')?.invalid
+                                  && registerForm.get('email')?.touched">
+            <mat-icon>mail_outline</mat-icon>
+            <input type="email" formControlName="email"
+                   placeholder="james@company.com"
+                   autocomplete="email"/>
+          </div>
+          <span class="err" *ngIf="err('email')">{{ err('email') }}</span>
+        </div>
+
+        <!-- Phone -->
+        <div class="field">
+          <label>M-Pesa phone number</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('phone')?.invalid
+                                  && registerForm.get('phone')?.touched">
+            <mat-icon>phone_outline</mat-icon>
+            <input type="tel" formControlName="phone"
+                   placeholder="0712 345 678"
+                   autocomplete="tel"/>
+          </div>
+          <span class="err" *ngIf="err('phone')">{{ err('phone') }}</span>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label>Password</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('password')?.invalid
+                                  && registerForm.get('password')?.touched">
+            <mat-icon>lock_outline</mat-icon>
+            <input [type]="hidePw ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="Minimum 6 characters"
+                   autocomplete="new-password"/>
+            <button type="button" class="eye-btn"
+                    (click)="hidePw = !hidePw">
+              <mat-icon>{{ hidePw ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <!-- Strength bar -->
+          <div class="strength-bar"
+               *ngIf="registerForm.get('password')?.value?.length > 0">
+            <div class="sb-track">
+              <div class="sb-fill"
+                   [style.width]="(pwStrength / 5 * 100) + '%'"
+                   [style.background]="pwStrengthColor"></div>
+            </div>
+            <span class="sb-label" [style.color]="pwStrengthColor">
+              {{ pwStrengthLabel }}
+            </span>
+          </div>
+          <span class="err" *ngIf="err('password')">{{ err('password') }}</span>
+        </div>
+
+        <!-- Confirm password -->
+        <div class="field">
+          <label>Confirm password</label>
+          <div class="input-row"
+               [class.touched-err]="confirmErr.length > 0">
+            <mat-icon>lock_outline</mat-icon>
+            <input [type]="hideConfirm ? 'password' : 'text'"
+                   formControlName="confirmPassword"
+                   placeholder="Repeat your password"
+                   autocomplete="new-password"/>
+            <button type="button" class="eye-btn"
+                    (click)="hideConfirm = !hideConfirm">
+              <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <span class="err" *ngIf="confirmErr">{{ confirmErr }}</span>
+        </div>
+
+        <!-- Terms -->
+        <label class="agree-row">
+          <input type="checkbox" formControlName="agree"/>
+          <span class="custom-check">
+            <mat-icon *ngIf="registerForm.get('agree')?.value">check</mat-icon>
+          </span>
+          <span class="agree-text">
+            I agree to the
+            <a href="#" (click)="$event.preventDefault()">Terms of Service</a>
+            and
+            <a href="#" (click)="$event.preventDefault()">Privacy Policy</a>
+          </span>
+        </label>
+        <span class="err"
+              *ngIf="registerForm.get('agree')?.invalid
+                     && registerForm.get('agree')?.touched">
+          You must accept the terms to continue
+        </span>
+
+        <!-- Submit -->
+        <button type="submit" class="cta-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">
+            Start free trial
+            <span class="btn-chip">14 days free</span>
+          </span>
+          <span *ngIf="isLoading" class="loading-row">
+            <mat-icon class="spin">autorenew</mat-icon>
+            Creating account…
+          </span>
+        </button>
+
+      </form>
+
+      <div class="or-sep"><span>Already have an account?</span></div>
+
+      <a routerLink="/auth/login" class="alt-btn">
+        Sign in to dashboard
+      </a>
+
+      <div class="form-links">
+        <a href="#">Privacy Policy</a>
+        <span>·</span>
+        <a href="#">Help & Support</a>
+        <span>·</span>
+        <span>v2.0</span>
+      </div>
+
+    </div>
+  </main>
+
+</div><div class="auth-shell">
+
+  <!-- LEFT — scrollable benefits panel -->
+  <aside class="insight-panel">
+    <div class="insight-scroll">
+
+      <div class="grid-bg"></div>
+      <div class="blob blob-top"></div>
+      <div class="blob blob-btm"></div>
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="logomark">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+            <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+                  stroke="#fff" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+            <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+          </svg>
+        </div>
+        <span class="brand-name">LoriView</span>
+        <span class="brand-tag">Fleet Intelligence</span>
+      </div>
+
+      <!-- Trial highlight -->
+      <div class="trial-hero">
+        <div class="trial-badge-big">
+          <span class="tb-days">14</span>
+          <span class="tb-text">Day Free Trial</span>
+        </div>
+        <h1>
+          Start monitoring<br>
+          your fleet<br>
+          <em>today.</em>
+        </h1>
+        <p>
+          Join hundreds of fleet owners across Kenya, Uganda and Tanzania
+          who use LoriView to protect their trucks, cut fuel costs and
+          stay in control of every journey.
+        </p>
+      </div>
+
+      <!-- What's included -->
+      <div class="section-block">
+        <div class="section-label">What's included in your trial</div>
+        <div class="trial-features">
+          <div *ngFor="let f of trialFeatures" class="tf-item">
+            <span class="tf-check">✓</span>
+            <span>{{ f }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits list -->
+      <div class="section-block">
+        <div class="section-label">Everything you get with LoriView</div>
+        <div class="benefit-list">
+          <div *ngFor="let b of benefits; let i = index"
+               class="benefit-item"
+               [style.animation-delay]="(i * 0.07) + 's'">
+            <span class="b-icon">{{ b.icon }}</span>
+            <span class="b-text">{{ b.text }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- How it works -->
+      <div class="section-block">
+        <div class="section-label">How it works</div>
+        <div class="steps-visual">
+          <div class="step-v">
+            <div class="sv-num">1</div>
+            <div class="sv-body">
+              <div class="sv-title">Create your account</div>
+              <div class="sv-desc">Takes 60 seconds. No card needed.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num">2</div>
+            <div class="sv-body">
+              <div class="sv-title">Install a GPS tracker</div>
+              <div class="sv-desc">Plug in a Teltonika device. Register the IMEI.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num">3</div>
+            <div class="sv-body">
+              <div class="sv-title">Start tracking</div>
+              <div class="sv-desc">Live map, alerts and analytics — immediate.</div>
+            </div>
+          </div>
+          <div class="sv-connector"></div>
+          <div class="step-v">
+            <div class="sv-num sv-amber">4</div>
+            <div class="sv-body">
+              <div class="sv-title">Subscribe via M-Pesa</div>
+              <div class="sv-desc">Pay monthly via STK push. Cancel any time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social proof numbers -->
+      <div class="numbers-bar">
+        <div class="num-item">
+          <span class="num-val">500+</span>
+          <span class="num-lbl">Fleet owners</span>
+        </div>
+        <div class="num-sep"></div>
+        <div class="num-item">
+          <span class="num-val">8,000+</span>
+          <span class="num-lbl">Trucks tracked</span>
+        </div>
+        <div class="num-sep"></div>
+        <div class="num-item">
+          <span class="num-val">3 countries</span>
+          <span class="num-lbl">Kenya · Uganda · TZ</span>
+        </div>
+      </div>
+
+      <!-- Payment note -->
+      <div class="payment-note">
+        <div class="pn-icon">📱</div>
+        <div class="pn-text">
+          <strong>Pay via M-Pesa</strong> after your trial.
+          No bank card, no international fees. Just an STK push to your phone.
+        </div>
+      </div>
+
+      <div class="insight-footer">
+        © 2026 LoriView · Built for East Africa
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- RIGHT — sticky register form -->
+  <main class="form-panel">
+
+    <!-- Mobile brand -->
+    <div class="mobile-brand">
+      <svg width="30" height="30" viewBox="0 0 38 38" fill="none">
+        <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+        <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+              stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+        <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+      </svg>
+      <span>LoriView</span>
+    </div>
+
+    <div class="form-box">
+
+      <div class="form-head">
+        <h2>Create your account</h2>
+        <p>Start your free 14-day trial — no credit card required</p>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+        <!-- Full name -->
+        <div class="field">
+          <label>Full name</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('fullName')?.invalid
+                                  && registerForm.get('fullName')?.touched">
+            <mat-icon>person_outline</mat-icon>
+            <input type="text" formControlName="fullName"
+                   placeholder="James Kamau"
+                   autocomplete="name"/>
+          </div>
+          <span class="err" *ngIf="err('fullName')">{{ err('fullName') }}</span>
+        </div>
+
+        <!-- Email -->
+        <div class="field">
+          <label>Email address</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('email')?.invalid
+                                  && registerForm.get('email')?.touched">
+            <mat-icon>mail_outline</mat-icon>
+            <input type="email" formControlName="email"
+                   placeholder="james@company.com"
+                   autocomplete="email"/>
+          </div>
+          <span class="err" *ngIf="err('email')">{{ err('email') }}</span>
+        </div>
+
+        <!-- Phone -->
+        <div class="field">
+          <label>M-Pesa phone number</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('phone')?.invalid
+                                  && registerForm.get('phone')?.touched">
+            <mat-icon>phone_outline</mat-icon>
+            <input type="tel" formControlName="phone"
+                   placeholder="0712 345 678"
+                   autocomplete="tel"/>
+          </div>
+          <span class="err" *ngIf="err('phone')">{{ err('phone') }}</span>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label>Password</label>
+          <div class="input-row"
+               [class.touched-err]="registerForm.get('password')?.invalid
+                                  && registerForm.get('password')?.touched">
+            <mat-icon>lock_outline</mat-icon>
+            <input [type]="hidePw ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="Minimum 6 characters"
+                   autocomplete="new-password"/>
+            <button type="button" class="eye-btn"
+                    (click)="hidePw = !hidePw">
+              <mat-icon>{{ hidePw ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <!-- Strength bar -->
+          <div class="strength-bar"
+               *ngIf="registerForm.get('password')?.value?.length > 0">
+            <div class="sb-track">
+              <div class="sb-fill"
+                   [style.width]="(pwStrength / 5 * 100) + '%'"
+                   [style.background]="pwStrengthColor"></div>
+            </div>
+            <span class="sb-label" [style.color]="pwStrengthColor">
+              {{ pwStrengthLabel }}
+            </span>
+          </div>
+          <span class="err" *ngIf="err('password')">{{ err('password') }}</span>
+        </div>
+
+        <!-- Confirm password -->
+        <div class="field">
+          <label>Confirm password</label>
+          <div class="input-row"
+               [class.touched-err]="confirmErr.length > 0">
+            <mat-icon>lock_outline</mat-icon>
+            <input [type]="hideConfirm ? 'password' : 'text'"
+                   formControlName="confirmPassword"
+                   placeholder="Repeat your password"
+                   autocomplete="new-password"/>
+            <button type="button" class="eye-btn"
+                    (click)="hideConfirm = !hideConfirm">
+              <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <span class="err" *ngIf="confirmErr">{{ confirmErr }}</span>
+        </div>
+
+        <!-- Terms -->
+        <label class="agree-row">
+          <input type="checkbox" formControlName="agree"/>
+          <span class="custom-check">
+            <mat-icon *ngIf="registerForm.get('agree')?.value">check</mat-icon>
+          </span>
+          <span class="agree-text">
+            I agree to the
+            <a href="#" (click)="$event.preventDefault()">Terms of Service</a>
+            and
+            <a href="#" (click)="$event.preventDefault()">Privacy Policy</a>
+          </span>
+        </label>
+        <span class="err"
+              *ngIf="registerForm.get('agree')?.invalid
+                     && registerForm.get('agree')?.touched">
+          You must accept the terms to continue
+        </span>
+
+        <!-- Submit -->
+        <button type="submit" class="cta-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">
+            Start free trial
+            <span class="btn-chip">14 days free</span>
+          </span>
+          <span *ngIf="isLoading" class="loading-row">
+            <mat-icon class="spin">autorenew</mat-icon>
+            Creating account…
+          </span>
+        </button>
+
+      </form>
+
+      <div class="or-sep"><span>Already have an account?</span></div>
+
+      <a routerLink="/auth/login" class="alt-btn">
+        Sign in to dashboard
+      </a>
+
+      <div class="form-links">
+        <a href="#">Privacy Policy</a>
+        <span>·</span>
+        <a href="#">Help & Support</a>
+        <span>·</span>
+        <span>v2.0</span>
+      </div>
+
+    </div>
+  </main>
+
+</div>

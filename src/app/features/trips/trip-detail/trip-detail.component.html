@@ -1,0 +1,126 @@
+<div class="page-container">
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading && trip">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="ph-left">
+        <button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <div class="trip-title">
+            {{ trip.origin }} → {{ trip.destination }}
+          </div>
+          <p>
+            Trip #{{ trip.id }} ·
+            <span class="plate-link" (click)="goToTruck()">
+              {{ trip.plateNumber }}
+            </span>
+          </p>
+        </div>
+      </div>
+      <div class="ph-actions">
+        <ng-container *ngIf="isOngoing">
+          <button class="btn-secondary danger-btn"
+                  [disabled]="cancelling"
+                  (click)="cancelTrip()">
+            <mat-icon>cancel</mat-icon>
+            {{ cancelling ? 'Cancelling…' : 'Cancel trip' }}
+          </button>
+          <button class="btn-primary"
+                  [disabled]="ending"
+                  (click)="endTrip()">
+            <mat-icon>flag</mat-icon>
+            {{ ending ? 'Ending…' : 'End trip' }}
+          </button>
+        </ng-container>
+        <span class="badge" [class]="trip.status.toLowerCase()"
+              *ngIf="!isOngoing">
+          {{ trip.status | titlecase }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Live indicator -->
+    <div class="live-banner" *ngIf="isOngoing">
+      <div class="live-dot"></div>
+      <span>This trip is currently in progress</span>
+    </div>
+
+    <!-- Stat strip -->
+    <div class="trip-stats">
+
+      <div class="ts-card">
+        <div class="ts-icon">📍</div>
+        <div class="ts-val">{{ trip.distanceKm ? (trip.distanceKm | number:'1.0-0') + ' km' : '—' }}</div>
+        <div class="ts-lbl">Distance</div>
+      </div>
+
+      <div class="ts-card">
+        <div class="ts-icon">⛽</div>
+        <div class="ts-val">{{ trip.fuelUsedL ? (trip.fuelUsedL | number:'1.1-1') + ' L' : '—' }}</div>
+        <div class="ts-lbl">Fuel used</div>
+      </div>
+
+      <div class="ts-card">
+        <div class="ts-icon">📊</div>
+        <div class="ts-val">{{ trip.fuelEfficiencyKmL ? (trip.fuelEfficiencyKmL | number:'1.1-1') + ' km/L' : '—' }}</div>
+        <div class="ts-lbl">Fuel efficiency</div>
+      </div>
+
+      <div class="ts-card">
+        <div class="ts-icon">🏎️</div>
+        <div class="ts-val">{{ trip.avgSpeedKmh ? (trip.avgSpeedKmh | number:'1.0-0') + ' km/h' : '—' }}</div>
+        <div class="ts-lbl">Avg speed</div>
+      </div>
+
+      <div class="ts-card">
+        <div class="ts-icon">⏱️</div>
+        <div class="ts-val ts-sm">{{ duration() }}</div>
+        <div class="ts-lbl">Duration</div>
+      </div>
+
+    </div>
+
+    <!-- Details -->
+    <div class="trip-grid">
+
+      <div class="lv-card">
+        <div class="card-header"><h3>Trip details</h3></div>
+        <div class="card-body">
+          <div class="detail-row" *ngFor="let row of [
+            {label:'Origin',      val: trip.origin},
+            {label:'Destination', val: trip.destination},
+            {label:'Truck',       val: trip.plateNumber},
+            {label:'Driver',      val: trip.driverName || 'Not assigned'},
+            {label:'Started',     val: formatDate(trip.startedAt)},
+            {label:'Ended',       val: formatDate(trip.endedAt)},
+            {label:'Status',      val: trip.status}
+          ]">
+            <span class="dr-label">{{ row.label }}</span>
+            <span class="dr-val">{{ row.val }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="lv-card">
+        <div class="card-header"><h3>Route map</h3></div>
+        <div class="card-body map-placeholder">
+          <div class="map-ph-icon">🗺️</div>
+          <div class="map-ph-text">
+            Live map tracking coming soon
+          </div>
+          <div class="map-ph-sub">
+            Connect a GPS tracker to see the route
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

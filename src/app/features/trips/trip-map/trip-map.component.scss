@@ -1,0 +1,41 @@
+.trip-map-wrapper {
+  position: relative;
+  width: 100%; height: 320px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--bg-surface2);
+}
+
+.trip-map-container {
+  width: 100%; height: 100%;
+}
+
+.no-route-overlay {
+  position: absolute; inset: 0; z-index: 10;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; text-align: center; padding: 24px;
+
+  .nro-icon  { font-size: 36px; }
+  .nro-title {
+    font-size: 15px; font-weight: 600; color: #fff;
+  }
+  .nro-sub   {
+    font-size: 12px; color: rgba(255,255,255,0.5);
+    max-width: 260px;
+  }
+}
+
+:global(.route-endpoint) {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+
+  .re-dot  { font-size: 20px; }
+  .re-label {
+    background: rgba(0,0,0,0.7); color: #fff;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 4px;
+    white-space: nowrap;
+  }
+}

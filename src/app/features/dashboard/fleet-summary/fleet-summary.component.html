@@ -1,0 +1,20 @@
+<div class="summary-grid">
+  <div *ngFor="let item of summaryItems" class="summary-item">
+    <div class="si-top">
+      <span class="si-icon">{{ item.icon }}</span>
+      <span class="si-label">{{ item.label }}</span>
+    </div>
+    <div class="si-value" [style.color]="item.color">
+      {{ item.value }}
+      <span class="si-total" *ngIf="item.total > 0">
+        / {{ item.total }}
+      </span>
+    </div>
+    <div class="si-bar">
+      <div class="si-fill"
+           [style.width]="percent(item.value, item.total) + '%'"
+           [style.background]="item.color">
+      </div>
+    </div>
+  </div>
+</div>

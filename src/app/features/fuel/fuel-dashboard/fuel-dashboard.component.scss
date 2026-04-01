@@ -1,0 +1,109 @@
+.page-container { padding:24px; max-width:1400px; margin:0 auto;
+  @media(max-width:768px){padding:16px;}
+}
+
+.sc-unit { font-size:14px; font-weight:400; color:var(--text-muted); }
+
+.controls-bar { margin-bottom:20px; }
+
+.controls-inner {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  gap:16px; flex-wrap:wrap;
+  padding:16px 20px !important;
+}
+
+.truck-tabs {
+  display:flex; gap:8px; flex-wrap:wrap;
+}
+
+.truck-tab {
+  padding:8px 14px; border-radius:20px;
+  background:var(--bg-surface2);
+  border:1px solid var(--border);
+  font-size:13px; font-weight:500;
+  color:var(--text-secondary); cursor:pointer;
+  transition:var(--transition);
+
+  &.active, &:hover {
+    background:var(--amber-dim);
+    border-color:rgba(245,158,11,0.35);
+    color:var(--amber);
+  }
+}
+
+.date-range {
+  display:flex; align-items:flex-end; gap:12px;
+}
+
+.lv-field.inline {
+  display:flex; flex-direction:column; gap:5px; margin-bottom:0;
+  label { font-size:11px; font-weight:600; color:var(--text-muted);
+    text-transform:uppercase; letter-spacing:0.6px; }
+  input { padding:8px 12px; font-size:13px; border-radius:var(--radius-sm);
+    border:1px solid var(--border); background:var(--bg-surface);
+    color:var(--text-primary); font-family:'Outfit',sans-serif;
+    &:focus{outline:none;border-color:var(--amber);} }
+}
+
+// Fuel grid
+.fuel-grid {
+  display:grid; grid-template-columns:280px 1fr; gap:16px;
+  margin-bottom:16px; align-items:flex-start;
+  @media(max-width:900px){grid-template-columns:1fr;}
+}
+
+// Gauge
+.gauge-body {
+  display:flex; flex-direction:column; align-items:center; gap:20px;
+}
+
+.gauge-wrap { width:200px; }
+.gauge-svg  { width:100%; }
+
+.gauge-detail {
+  width:100%;
+  .gd-row {
+    display:flex; justify-content:space-between;
+    padding:9px 0; border-bottom:1px solid var(--border);
+    font-size:13px;
+    &:last-child{border-bottom:none;}
+    span:first-child { color:var(--text-muted); }
+    span:last-child  { font-weight:600; color:var(--text-primary); }
+  }
+}
+
+.chart-card { min-height:300px; }
+
+// Table cells
+.plate-cell {
+  font-weight:700; font-size:12px;
+  background:var(--bg-surface2); border:1px solid var(--border);
+  padding:3px 8px; border-radius:6px;
+  font-family:'Syne',sans-serif; color:var(--text-primary);
+}
+
+.fuel-cell  { font-weight:600; color:var(--warning); }
+
+.eff-cell {
+  font-weight:600; color:var(--text-secondary);
+  &.good { color:var(--success); }
+  &.bad  { color:var(--danger); }
+}
+
+.count-chip {
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:2px 10px; background:var(--bg-surface2);
+  border:1px solid var(--border);
+  border-radius:20px; font-size:12px; font-weight:600;
+  color:var(--text-secondary);
+}
+
+.empty-state {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px; text-align:center;
+  &.padded{padding:60px 24px;}
+  .es-icon  {font-size:44px;margin-bottom:4px;}
+  .es-title {font-size:16px;font-weight:600;color:var(--text-primary);}
+  .es-desc  {font-size:13px;color:var(--text-muted);}
+}

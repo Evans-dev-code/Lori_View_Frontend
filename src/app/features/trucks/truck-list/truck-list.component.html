@@ -1,0 +1,137 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Fleet Management</h1>
+      <p>{{ trucks.length }} trucks registered ·
+         {{ activeTrucks }} active</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn-primary" (click)="addTruck()">
+        <mat-icon>add</mat-icon> Add truck
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search by plate, make or model…"
+        [value]="search"
+        (input)="onSearch($any($event.target).value)"/>
+    </div>
+
+    <div class="status-tabs">
+      <button *ngFor="let s of statuses"
+              class="status-tab"
+              [class.active]="filterStatus === s"
+              (click)="onFilterStatus(s)">
+        {{ s === 'ALL' ? 'All' : (s | titlecase) }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <!-- Empty -->
+  <div class="lv-card" *ngIf="!loading && filtered.length === 0">
+    <div class="empty-state padded">
+      <div class="es-icon">🚛</div>
+      <div class="es-title">No trucks found</div>
+      <div class="es-desc">
+        {{ trucks.length === 0
+           ? 'Add your first truck to start tracking.'
+           : 'No trucks match your search.' }}
+      </div>
+      <button class="btn-primary" *ngIf="trucks.length === 0"
+              (click)="addTruck()">
+        <mat-icon>add</mat-icon> Add truck
+      </button>
+    </div>
+  </div>
+
+  <!-- Truck grid -->
+  <div class="truck-grid" *ngIf="!loading && filtered.length > 0">
+    <div class="truck-card"
+         *ngFor="let truck of filtered"
+         (click)="viewTruck(truck.id)">
+
+      <!-- Card header -->
+      <div class="tc-head">
+        <div class="tc-plate">{{ truck.plateNumber }}</div>
+        <app-truck-status-badge [status]="truck.status">
+        </app-truck-status-badge>
+      </div>
+
+      <!-- Truck info -->
+      <div class="tc-body">
+        <div class="tc-make">
+          {{ truck.make }} {{ truck.model }}
+          {{ truck.year ? '(' + truck.year + ')' : '' }}
+        </div>
+
+        <!-- Fuel bar -->
+        <div class="tc-fuel">
+          <div class="tf-top">
+            <span class="tf-label">Fuel level</span>
+            <span class="tf-val"
+                  [style.color]="fuelColor(fuelPercent(truck))">
+              {{ fuelPercent(truck) > 0
+                 ? fuelPercent(truck) + '%'
+                 : 'No data' }}
+            </span>
+          </div>
+          <div class="tf-track">
+            <div class="tf-fill"
+                 [style.width]="fuelPercent(truck) + '%'"
+                 [style.background]="fuelColor(fuelPercent(truck))">
+            </div>
+          </div>
+        </div>
+
+        <!-- Meta row -->
+        <div class="tc-meta">
+          <div class="tc-meta-item">
+            <mat-icon>gps_fixed</mat-icon>
+            <span>
+              {{ truck.currentSpeedKmh != null
+                 ? truck.currentSpeedKmh + ' km/h'
+                 : 'No GPS' }}
+            </span>
+          </div>
+          <div class="tc-meta-item">
+            <mat-icon>local_gas_station</mat-icon>
+            <span>
+              {{ truck.fuelCapacityL
+                 ? truck.fuelCapacityL + ' L tank'
+                 : 'Unknown' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card footer -->
+      <div class="tc-foot">
+        <button class="icon-action"
+                (click)="editTruck($event, truck.id)"
+                matTooltip="Edit truck">
+          <mat-icon>edit_outlined</mat-icon>
+        </button>
+        <button class="icon-action danger"
+                (click)="deleteTruck($event, truck)"
+                matTooltip="Delete truck">
+          <mat-icon>delete_outlined</mat-icon>
+        </button>
+        <button class="tc-view-btn">
+          View details <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

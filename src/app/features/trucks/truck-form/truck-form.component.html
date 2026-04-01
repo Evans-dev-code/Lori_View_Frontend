@@ -1,0 +1,141 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <button class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>{{ isEdit ? 'Edit truck' : 'Register new truck' }}</h1>
+        <p>
+          {{ isEdit
+             ? 'Update your truck details'
+             : 'Add a truck to your fleet' }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div class="form-layout" *ngIf="!loading">
+
+    <div class="lv-card form-card">
+      <div class="card-header">
+        <h3>Truck information</h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+          <!-- Plate number -->
+          <div class="lv-field">
+            <label>Plate number *</label>
+            <input type="text" formControlName="plateNumber"
+                   placeholder="KDA 123X"
+                   style="text-transform: uppercase"/>
+            <span class="field-err"
+                  *ngIf="err('plateNumber')">
+              {{ err('plateNumber') }}
+            </span>
+          </div>
+
+          <!-- Make & Model -->
+          <div class="two-col">
+            <div class="lv-field">
+              <label>Make *</label>
+              <select formControlName="make">
+                <option value="">Select make</option>
+                <option *ngFor="let m of makes"
+                        [value]="m">{{ m }}</option>
+              </select>
+              <span class="field-err" *ngIf="err('make')">
+                {{ err('make') }}
+              </span>
+            </div>
+
+            <div class="lv-field">
+              <label>Model *</label>
+              <input type="text" formControlName="model"
+                     placeholder="e.g. FVR 34"/>
+              <span class="field-err" *ngIf="err('model')">
+                {{ err('model') }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Year & Tank -->
+          <div class="two-col">
+            <div class="lv-field">
+              <label>Year</label>
+              <input type="number" formControlName="year"
+                     placeholder="e.g. 2020"/>
+              <span class="field-err" *ngIf="err('year')">
+                {{ err('year') }}
+              </span>
+            </div>
+
+            <div class="lv-field">
+              <label>Fuel tank capacity (litres) *</label>
+              <input type="number" formControlName="fuelCapacityL"
+                     placeholder="e.g. 300"/>
+              <span class="field-err" *ngIf="err('fuelCapacityL')">
+                {{ err('fuelCapacityL') }}
+              </span>
+            </div>
+          </div>
+
+          <!-- IMEI -->
+          <div class="lv-field">
+            <label>GPS tracker IMEI</label>
+            <input type="text" formControlName="deviceImei"
+                   placeholder="15-digit IMEI number"/>
+            <div class="field-hint">
+              Find this on your Teltonika device or dial *#06# on
+              the device's SIM.
+            </div>
+            <span class="field-err" *ngIf="err('deviceImei')">
+              {{ err('deviceImei') }}
+            </span>
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-secondary"
+                    (click)="goBack()">
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary"
+                    [disabled]="saving">
+              <mat-icon *ngIf="!saving">save</mat-icon>
+              <mat-icon *ngIf="saving" class="spin">autorenew</mat-icon>
+              {{ saving ? 'Saving…' : (isEdit ? 'Update truck' : 'Register truck') }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Help card -->
+    <div class="lv-card help-card">
+      <div class="card-header"><h3>Setup guide</h3></div>
+      <div class="card-body">
+        <div class="guide-step" *ngFor="let s of [
+          {n:1, title:'Register the truck', desc:'Fill in the plate number, make, model and fuel tank size.'},
+          {n:2, title:'Install GPS tracker', desc:'Mount a Teltonika FMB920 in the cab and connect it to the power supply.'},
+          {n:3, title:'Insert a SIM card', desc:'Use a multi-network SIM that covers Kenya and Uganda (Safaricom/MTN).'},
+          {n:4, title:'Enter the IMEI', desc:'Paste the 15-digit IMEI from the tracker into the field above.'},
+          {n:5, title:'Start tracking', desc:'The tracker will check in every 30 seconds and appear on your live map.'}
+        ]">
+          <div class="gs-num">{{ s.n }}</div>
+          <div class="gs-body">
+            <div class="gs-title">{{ s.title }}</div>
+            <div class="gs-desc">{{ s.desc }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

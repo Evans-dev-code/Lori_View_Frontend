@@ -1,0 +1,67 @@
+.page-container { padding: 24px; max-width: 1400px; margin: 0 auto;
+  @media(max-width:768px){padding:16px;}
+}
+
+.back-btn {
+  background: var(--bg-surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 8px; cursor: pointer;
+  color: var(--text-secondary); display: flex; align-items: center;
+  transition: var(--transition); flex-shrink: 0;
+  &:hover { background: var(--bg-surface); color: var(--text-primary); }
+  mat-icon { font-size: 20px; }
+}
+
+.ph-left { display: flex; align-items: center; gap: 14px; }
+
+.form-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: flex-start;
+
+  @media (max-width: 1024px) { grid-template-columns: 1fr; }
+}
+
+.two-col {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  @media (max-width: 500px) { grid-template-columns: 1fr; }
+}
+
+.field-err {
+  font-size: 12px; color: var(--danger); margin-top: -4px;
+}
+
+.field-hint {
+  font-size: 12px; color: var(--text-muted);
+  margin-top: 5px; line-height: 1.5;
+}
+
+.form-actions {
+  display: flex; justify-content: flex-end; gap: 12px;
+  margin-top: 8px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+// Guide steps
+.guide-step {
+  display: flex; gap: 14px; margin-bottom: 20px;
+  &:last-child { margin-bottom: 0; }
+
+  .gs-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--amber-dim); color: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .gs-title {
+    font-size: 13px; font-weight: 600; color: var(--text-primary);
+  }
+  .gs-desc {
+    font-size: 12.5px; color: var(--text-muted);
+    margin-top: 3px; line-height: 1.6;
+  }
+}

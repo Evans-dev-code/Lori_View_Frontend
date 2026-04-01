@@ -1,0 +1,89 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Subscription</h1>
+      <p>Choose the plan that fits your fleet</p>
+    </div>
+  </div>
+
+  <!-- Trial banner -->
+  <div class="trial-banner" *ngIf="isTrial">
+    <div class="tb-icon">⏱</div>
+    <div class="tb-body">
+      <div class="tb-title">
+        You have {{ trialDays }} day{{ trialDays !== 1 ? 's' : '' }}
+        left in your free trial
+      </div>
+      <div class="tb-sub">
+        Subscribe now to keep tracking your fleet without interruption.
+        Pay monthly via M-Pesa — no card required.
+      </div>
+    </div>
+  </div>
+
+  <!-- Expired banner -->
+  <div class="expired-banner" *ngIf="isExpired">
+    <mat-icon>warning</mat-icon>
+    <div>
+      <div class="eb-title">Your trial has expired</div>
+      <div class="eb-sub">
+        Choose a plan below to reactivate your fleet tracking.
+      </div>
+    </div>
+  </div>
+
+  <!-- Plans grid -->
+  <div class="plans-grid">
+
+    <div *ngFor="let plan of plans"
+         class="plan-card"
+         [class.popular]="plan.popular">
+
+      <div class="popular-chip" *ngIf="plan.popular">
+        Most popular
+      </div>
+
+      <div class="plan-name" [style.color]="planColor(plan.plan)">
+        {{ plan.plan | titlecase }}
+      </div>
+
+      <div class="plan-price">
+        <span class="pp-amount">
+          KES {{ plan.priceKes | number:'1.0-0' }}
+        </span>
+        <span class="pp-period">/month</span>
+      </div>
+
+      <div class="plan-trucks">{{ plan.trucks }}</div>
+
+      <div class="plan-features">
+        <div class="pf-item"
+             *ngFor="let feature of getFeaturesForPlan(plan.plan)">
+          <mat-icon>check_circle</mat-icon>
+          <span>{{ feature }}</span>
+        </div>
+      </div>
+
+      <button class="plan-cta"
+              [class.popular-cta]="plan.popular"
+              (click)="selectPlan(plan)">
+        Choose {{ plan.plan | titlecase }}
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- M-Pesa note -->
+  <div class="mpesa-note">
+    <div class="mn-icon">📱</div>
+    <div class="mn-text">
+      <strong>Payment via M-Pesa STK Push</strong> — after selecting
+      a plan, you'll enter your M-Pesa number and we'll send a
+      payment prompt directly to your phone. No bank card needed.
+    </div>
+  </div>
+
+</div>

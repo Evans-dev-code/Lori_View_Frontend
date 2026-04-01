@@ -1,0 +1,119 @@
+<div class="page-container">
+
+  <!-- Success state -->
+  <div class="success-view" *ngIf="paymentSent">
+    <div class="sv-icon">📱</div>
+    <h2>Check your phone!</h2>
+    <p>
+      We sent an M-Pesa payment prompt to your phone.
+      Enter your PIN to complete the payment of
+      <strong>KES {{ amountKes | number:'1.0-0' }}</strong>.
+    </p>
+    <div class="sv-steps">
+      <div class="sv-step">
+        <span class="ss-num">1</span>
+        <span>Check for the M-Pesa prompt on your phone</span>
+      </div>
+      <div class="sv-step">
+        <span class="ss-num">2</span>
+        <span>Enter your M-Pesa PIN</span>
+      </div>
+      <div class="sv-step">
+        <span class="ss-num">3</span>
+        <span>Your subscription activates automatically</span>
+      </div>
+    </div>
+    <button class="btn-primary" (click)="goToDashboard()">
+      <mat-icon>dashboard</mat-icon>
+      Go to dashboard
+    </button>
+  </div>
+
+  <!-- Payment form -->
+  <ng-container *ngIf="!paymentSent">
+
+    <div class="page-header">
+      <div class="ph-left">
+        <button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <h1>Complete payment</h1>
+          <p>Pay via M-Pesa STK Push</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-layout">
+
+      <!-- Form card -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Enter M-Pesa number</h3>
+        </div>
+        <div class="card-body">
+
+          <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+            <div class="lv-field">
+              <label>M-Pesa phone number *</label>
+              <input type="tel" formControlName="phone"
+                     placeholder="0712 345 678"/>
+              <span class="field-err" *ngIf="phoneError()">
+                {{ phoneError() }}
+              </span>
+              <div class="field-hint">
+                Enter the number registered to your M-Pesa account.
+                Supports Safaricom numbers only.
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary pay-btn"
+                    [disabled]="paying">
+              <mat-icon *ngIf="!paying">phone_android</mat-icon>
+              <mat-icon *ngIf="paying" class="spin">autorenew</mat-icon>
+              {{ paying
+                 ? 'Sending prompt…'
+                 : 'Send KES ' + (amountKes | number:"1.0-0") + ' prompt' }}
+            </button>
+
+          </form>
+
+        </div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="lv-card summary-card">
+        <div class="card-header"><h3>Order summary</h3></div>
+        <div class="card-body">
+          <div class="os-row">
+            <span>Plan</span>
+            <span class="os-val">{{ plan | titlecase }}</span>
+          </div>
+          <div class="os-row">
+            <span>Trucks included</span>
+            <span class="os-val">{{ trucks }}</span>
+          </div>
+          <div class="os-row">
+            <span>Billing</span>
+            <span class="os-val">Monthly</span>
+          </div>
+          <div class="os-divider"></div>
+          <div class="os-row total">
+            <span>Total due today</span>
+            <span class="os-total">
+              KES {{ amountKes | number:'1.0-0' }}
+            </span>
+          </div>
+          <div class="os-note">
+            You'll be charged again in 30 days.
+            Cancel anytime from your subscription page.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

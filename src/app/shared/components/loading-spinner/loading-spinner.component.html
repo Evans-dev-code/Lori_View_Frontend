@@ -1,0 +1,8 @@
+<div class="spinner-wrap"
+     [class.overlay]="overlay"
+     [class]="size">
+  <div class="spinner-ring">
+    <div></div><div></div><div></div><div></div>
+  </div>
+  <p class="spinner-msg" *ngIf="message && size !== 'sm'">{{ message }}</p>
+</div>

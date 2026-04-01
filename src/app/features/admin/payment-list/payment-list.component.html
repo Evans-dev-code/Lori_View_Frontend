@@ -1,0 +1,70 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <button class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>Payments</h1>
+        <p>{{ payments.length }} total ·
+           KES {{ totalRevenue | number:'1.0-0' }} collected</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status filter -->
+  <div class="status-tabs" style="margin-bottom:20px">
+    <button *ngFor="let s of statuses"
+            class="status-tab"
+            [class.active]="filterStatus === s"
+            (click)="filterStatus = s; applyFilter()">
+      {{ s === 'ALL' ? 'All' : (s | titlecase) }}
+    </button>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <div class="lv-card" *ngIf="!loading">
+
+    <div class="empty-state padded"
+         *ngIf="filtered.length === 0">
+      <div class="es-icon">💳</div>
+      <div class="es-title">No payments found</div>
+    </div>
+
+    <div class="lv-table-wrap" *ngIf="filtered.length > 0">
+      <table>
+        <thead>
+          <tr>
+            <th>Owner ID</th>
+            <th>Phone</th>
+            <th>Amount (KES)</th>
+            <th>M-Pesa receipt</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of filtered">
+            <td>{{ p.ownerId }}</td>
+            <td>{{ p.phoneNumber }}</td>
+            <td>
+              <span class="amount-cell">
+                {{ p.amountKes | number:'1.0-0' }}
+              </span>
+            </td>
+            <td>{{ p.mpesaReceiptNumber || '—' }}</td>
+            <td>
+              <span class="badge" [class]="statusClass(p.status)">
+                {{ p.status | titlecase }}
+              </span>
+            </td>
+            <td>{{ formatDate(p.createdAt) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

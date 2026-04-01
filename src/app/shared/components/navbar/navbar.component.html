@@ -1,0 +1,119 @@
+<header class="navbar">
+
+  <!-- Left side -->
+  <div class="nav-left">
+
+    <button class="hamburger" (click)="toggleSidebar.emit()">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <div class="nav-brand">
+      <span class="nav-page-title">{{ pageTitle }}</span>
+    </div>
+
+  </div>
+
+  <!-- Right side -->
+  <div class="nav-right">
+
+    <!-- Trial pill — hidden on very small screens -->
+    <button class="trial-pill"
+            *ngIf="isTrial"
+            (click)="goToSubscription()">
+      <mat-icon>timer_outlined</mat-icon>
+      <span class="tp-days">{{ trialDays }}d left</span>
+      <span class="tp-cta">Upgrade</span>
+    </button>
+
+    <!-- Divider -->
+    <div class="nav-divider" *ngIf="isTrial"></div>
+
+    <!-- Theme toggle -->
+    <button class="icon-btn theme-btn"
+            (click)="toggleTheme()"
+            [matTooltip]="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+            matTooltipPosition="below">
+      <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <!-- Alerts -->
+    <button class="icon-btn alert-btn"
+            (click)="goToAlerts()"
+            matTooltip="Notifications"
+            matTooltipPosition="below">
+      <mat-icon>notifications_none</mat-icon>
+      <span class="alert-badge" *ngIf="unreadAlerts > 0">
+        {{ unreadAlerts > 9 ? '9+' : unreadAlerts }}
+      </span>
+    </button>
+
+    <!-- Divider -->
+    <div class="nav-divider"></div>
+
+    <!-- User chip trigger -->
+    <button class="user-chip" [matMenuTriggerFor]="userMenu">
+      <div class="chip-avatar">{{ userInitials }}</div>
+      <div class="chip-info">
+        <span class="chip-name">{{ userName }}</span>
+        <span class="chip-role">
+          {{ authService.isAdmin() ? 'Super Admin' : 'Fleet Owner' }}
+        </span>
+      </div>
+      <mat-icon class="chip-caret">keyboard_arrow_down</mat-icon>
+    </button>
+
+    <!-- Dropdown menu -->
+    <mat-menu #userMenu="matMenu"
+              xPosition="before"
+              yPosition="below"
+              class="lv-user-menu">
+
+      <!-- Non-clickable profile header -->
+      <div class="lv-menu-user" (click)="$event.stopPropagation()">
+        <div class="lmu-avatar">{{ userInitials }}</div>
+        <div class="lmu-details">
+          <div class="lmu-name">
+            {{ authService.getCurrentUser()?.fullName }}
+          </div>
+          <div class="lmu-email">
+            {{ authService.getCurrentUser()?.email }}
+          </div>
+        </div>
+        <span class="lmu-role-chip"
+              [class.admin]="authService.isAdmin()">
+          {{ authService.isAdmin() ? 'Admin' : 'Owner' }}
+        </span>
+      </div>
+
+      <div class="lv-menu-sep"></div>
+
+      <button mat-menu-item routerLink="/profile">
+        <mat-icon>manage_accounts</mat-icon>
+        <span>Profile & settings</span>
+      </button>
+
+      <button mat-menu-item (click)="goToSubscription()"
+              *ngIf="!authService.isAdmin()">
+        <mat-icon>credit_card</mat-icon>
+        <span>Subscription</span>
+      </button>
+
+      <button mat-menu-item (click)="toggleTheme()">
+        <mat-icon>{{ isDark ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        <span>{{ isDark ? 'Light mode' : 'Dark mode' }}</span>
+      </button>
+
+      <div class="lv-menu-sep"></div>
+
+      <button mat-menu-item
+              class="lv-logout-item"
+              (click)="authService.logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sign out</span>
+      </button>
+
+    </mat-menu>
+
+  </div>
+
+</header>

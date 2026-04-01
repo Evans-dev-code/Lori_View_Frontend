@@ -1,0 +1,93 @@
+.page-container { padding:24px; max-width:1400px; margin:0 auto;
+  @media(max-width:768px){padding:16px;} }
+
+.ph-left { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+
+.back-btn {
+  background:var(--bg-surface2); border:1px solid var(--border);
+  border-radius:var(--radius-sm); padding:8px; cursor:pointer;
+  color:var(--text-secondary); display:flex; align-items:center;
+  transition:var(--transition); flex-shrink:0;
+  &:hover{background:var(--bg-surface);color:var(--text-primary);}
+  mat-icon{font-size:20px;}
+}
+
+.owner-avatar-lg {
+  width:50px; height:50px; border-radius:50%;
+  background:var(--amber-dim); border:2px solid rgba(245,158,11,0.25);
+  color:var(--amber); display:flex; align-items:center;
+  justify-content:center; font-size:20px; font-weight:700;
+  flex-shrink:0;
+}
+
+.btn-secondary.danger {
+  border-color:rgba(239,68,68,0.3) !important;
+  color:var(--danger) !important;
+  &:hover{background:var(--danger-dim) !important;}
+}
+
+// Add truck form grid
+.add-truck-card { margin-bottom:16px; }
+
+.form-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  @media(max-width:900px){grid-template-columns:repeat(2,1fr);}
+  @media(max-width:600px){grid-template-columns:1fr;}
+}
+
+.form-footer {
+  display:flex; justify-content:flex-end;
+  padding-top:16px; border-top:1px solid var(--border);
+  margin-top:8px;
+}
+
+.field-err { font-size:12px; color:var(--danger); }
+
+// Detail tabs
+.detail-tabs {
+  display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;
+}
+
+.detail-tab {
+  padding:9px 16px; border-radius:20px; cursor:pointer;
+  background:var(--bg-surface); border:1px solid var(--border);
+  font-size:13px; font-weight:500; color:var(--text-secondary);
+  transition:var(--transition);
+  &.active{background:var(--amber-dim);
+    border-color:rgba(245,158,11,0.3); color:var(--amber);}
+  &:hover:not(.active){background:var(--bg-surface2);}
+}
+
+// Table cells
+.plate-badge {
+  font-weight:700; font-size:12px;
+  background:var(--bg-surface2); border:1px solid var(--border);
+  padding:3px 8px; border-radius:6px;
+  font-family:'Syne',sans-serif; color:var(--text-primary);
+}
+
+.imei-cell {
+  font-size:12px; color:var(--text-muted);
+  font-family:monospace;
+}
+
+.plan-badge {
+  font-weight:700; font-size:12px;
+  color:var(--amber); padding:3px 10px;
+  background:var(--amber-dim); border-radius:6px;
+}
+
+.amount-cell {
+  font-weight:700; color:var(--success);
+  font-family:'Syne',sans-serif;
+}
+
+.empty-state {
+  display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:8px; text-align:center;
+  &.padded{padding:60px 24px;}
+  .es-icon{font-size:44px;margin-bottom:4px;}
+  .es-title{font-size:16px;font-weight:600;color:var(--text-primary);}
+  .es-desc{font-size:13px;color:var(--text-muted);}
+}

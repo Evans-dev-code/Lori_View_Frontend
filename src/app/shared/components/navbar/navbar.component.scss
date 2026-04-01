@@ -1,0 +1,343 @@
+// ─────────────────────────────────────────────────────
+// Navbar shell
+// ─────────────────────────────────────────────────────
+.navbar {
+  height: var(--navbar-height);
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px 0 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 1px 0 var(--border);
+  transition: background 0.3s, border-color 0.3s;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+// ─────────────────────────────────────────────────────
+// Left — hamburger + title
+// ─────────────────────────────────────────────────────
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.hamburger {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 20px; width: 20px; height: 20px;
+    transition: color 0.2s;
+  }
+
+  &:hover {
+    background: var(--bg-surface2);
+    color: var(--text-primary);
+  }
+}
+
+.nav-brand {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.nav-page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px; font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+// ─────────────────────────────────────────────────────
+// Right — actions row
+// ─────────────────────────────────────────────────────
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+// Vertical divider between groups
+.nav-divider {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+// ─────────────────────────────────────────────────────
+// Trial upgrade pill
+// ─────────────────────────────────────────────────────
+.trial-pill {
+  display: flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 10px;
+  background: rgba(245,158,11,0.07);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px; font-weight: 500;
+  color: #b45309;
+  transition: var(--transition);
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 14px; width: 14px; height: 14px;
+    color: var(--amber);
+  }
+
+  .tp-days {
+    white-space: nowrap;
+    @media (max-width: 560px) { display: none; }
+  }
+
+  .tp-cta {
+    padding: 2px 9px;
+    border-radius: 20px;
+    background: var(--amber);
+    color: #0f172a;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    background: rgba(245,158,11,0.13);
+    border-color: rgba(245,158,11,0.35);
+    transform: translateY(-1px);
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// Icon buttons (theme, alerts)
+// ─────────────────────────────────────────────────────
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: none; border: none; cursor: pointer;
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition);
+  position: relative;
+  flex-shrink: 0;
+
+  mat-icon {
+    font-size: 20px; width: 20px; height: 20px;
+    transition: color 0.2s;
+  }
+
+  &:hover {
+    background: var(--bg-surface2);
+    color: var(--text-primary);
+  }
+}
+
+.theme-btn mat-icon {
+  transition: transform 0.5s ease, color 0.2s;
+}
+.theme-btn:hover mat-icon {
+  transform: rotate(22deg);
+}
+
+// Alert badge
+.alert-btn {
+  .alert-badge {
+    position: absolute;
+    top: 4px; right: 4px;
+    min-width: 15px; height: 15px;
+    background: var(--danger);
+    color: #fff;
+    border-radius: 20px;
+    border: 1.5px solid var(--bg-navbar);
+    font-size: 9px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+    animation: badgePop 0.25s cubic-bezier(0.4,0,0.2,1);
+    pointer-events: none;
+  }
+}
+
+@keyframes badgePop {
+  0%   { transform: scale(0); opacity: 0; }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+// ─────────────────────────────────────────────────────
+// User chip — compact pill trigger
+// ─────────────────────────────────────────────────────
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  height: 36px;
+  padding: 0 10px 0 4px;
+  background: var(--bg-surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+  min-width: 0;
+
+  .chip-avatar {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(
+      135deg,
+      rgba(245,158,11,0.25) 0%,
+      rgba(245,158,11,0.1) 100%
+    );
+    border: 1.5px solid rgba(245,158,11,0.35);
+    color: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800;
+    flex-shrink: 0;
+    font-family: 'Syne', sans-serif;
+  }
+
+  .chip-info {
+    display: flex; flex-direction: column;
+    align-items: flex-start; min-width: 0;
+
+    @media (max-width: 480px) { display: none; }
+  }
+
+  .chip-name {
+    font-size: 13px; font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    line-height: 1.2;
+  }
+
+  .chip-role {
+    font-size: 10px; font-weight: 500;
+    color: var(--text-muted);
+    white-space: nowrap;
+    line-height: 1.2;
+    letter-spacing: 0.2px;
+  }
+
+  .chip-caret {
+    font-size: 16px; width: 16px; height: 16px;
+    color: var(--text-muted);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: var(--bg-surface);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-sm);
+
+    .chip-caret { transform: rotate(180deg); }
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// Dropdown menu — custom styles injected globally
+// ─────────────────────────────────────────────────────
+
+// Non-clickable user header inside menu
+.lv-menu-user {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 16px 12px;
+  pointer-events: none;
+  min-width: 220px;
+
+  .lmu-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(
+      135deg,
+      rgba(245,158,11,0.2) 0%,
+      rgba(245,158,11,0.08) 100%
+    );
+    border: 1.5px solid rgba(245,158,11,0.3);
+    color: var(--amber);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    flex-shrink: 0;
+  }
+
+  .lmu-details {
+    flex: 1; min-width: 0;
+
+    .lmu-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+
+    .lmu-email {
+      font-size: 11px; color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap; overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 140px;
+    }
+  }
+
+  .lmu-role-chip {
+    flex-shrink: 0;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 10px; font-weight: 700;
+    background: var(--info-dim);
+    color: var(--info);
+    letter-spacing: 0.3px;
+
+    &.admin {
+      background: var(--indigo-dim);
+      color: var(--indigo);
+    }
+  }
+}
+
+.lv-menu-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+// Logout item — danger colour
+.lv-logout-item {
+  color: var(--danger) !important;
+
+  mat-icon { color: var(--danger) !important; }
+
+  &:hover {
+    background: var(--danger-dim) !important;
+  }
+}
+
+// ─────────────────────────────────────────────────────
+// Responsive — compact on small screens
+// ─────────────────────────────────────────────────────
+@media (max-width: 400px) {
+  .navbar { padding: 0 12px; }
+  .nav-divider { margin: 0 3px; }
+  .icon-btn { width: 32px; height: 32px; }
+  .user-chip { padding: 0 8px 0 4px; }
+}

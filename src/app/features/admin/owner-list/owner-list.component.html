@@ -1,0 +1,89 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <button class="back-btn" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <div>
+        <h1>Fleet owners</h1>
+        <p>{{ owners.length }} registered accounts</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <mat-icon>search</mat-icon>
+      <input type="text" placeholder="Search owners…"
+             [value]="search"
+             (input)="search = $any($event.target).value;
+                      applyFilter()"/>
+    </div>
+    <div class="status-tabs">
+      <button *ngFor="let s of statuses"
+              class="status-tab"
+              [class.active]="filterStatus === s"
+              (click)="filterStatus = s; applyFilter()">
+        {{ s === 'ALL' ? 'All' : (s | titlecase) }}
+      </button>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <!-- Empty -->
+  <div class="lv-card" *ngIf="!loading && filtered.length === 0">
+    <div class="empty-state padded">
+      <div class="es-icon">👤</div>
+      <div class="es-title">No owners found</div>
+    </div>
+  </div>
+
+  <!-- Owner cards grid -->
+  <div class="owners-grid" *ngIf="!loading && filtered.length > 0">
+
+    <div class="owner-card"
+         *ngFor="let owner of filtered"
+         (click)="viewOwner(owner.id)">
+
+      <div class="oc-top">
+        <div class="oc-avatar">
+          {{ owner.fullName.charAt(0).toUpperCase() }}
+        </div>
+        <div class="oc-meta">
+          <div class="oc-name">{{ owner.fullName }}</div>
+          <div class="oc-email">{{ owner.email }}</div>
+        </div>
+        <span class="badge" [class]="statusClass(owner.accountStatus)">
+          {{ owner.accountStatus | titlecase }}
+        </span>
+      </div>
+
+      <div class="oc-rows">
+        <div class="oc-row">
+          <span>Phone</span>
+          <span>{{ owner.phone || '—' }}</span>
+        </div>
+        <div class="oc-row">
+          <span>Trial ends</span>
+          <span>{{ formatDate(owner.trialEndsAt) }}</span>
+        </div>
+        <div class="oc-row">
+          <span>Joined</span>
+          <span>{{ formatDate(owner.createdAt) }}</span>
+        </div>
+      </div>
+
+      <div class="oc-footer">
+        <span class="oc-view">
+          View details <mat-icon>arrow_forward</mat-icon>
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

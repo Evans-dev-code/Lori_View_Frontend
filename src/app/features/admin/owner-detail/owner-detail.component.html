@@ -1,0 +1,273 @@
+<div class="page-container">
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading && owner">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="ph-left">
+        <button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="owner-avatar-lg">
+          {{ owner.fullName.charAt(0).toUpperCase() }}
+        </div>
+        <div>
+          <h1>{{ owner.fullName }}</h1>
+          <p>{{ owner.email }} · {{ owner.phone || 'No phone' }}</p>
+        </div>
+        <span class="badge"
+              [class]="statusClass(owner.accountStatus)">
+          {{ owner.accountStatus | titlecase }}
+        </span>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-secondary danger"
+                *ngIf="owner.accountStatus !== 'SUSPENDED'"
+                (click)="suspendOwner()"
+                [disabled]="suspending">
+          <mat-icon>block</mat-icon>
+          Suspend
+        </button>
+        <button class="btn-primary"
+                *ngIf="owner.accountStatus === 'SUSPENDED'"
+                (click)="activateOwner()">
+          <mat-icon>check_circle</mat-icon>
+          Activate
+        </button>
+        <button class="btn-primary"
+                (click)="showAddTruck = !showAddTruck">
+          <mat-icon>{{ showAddTruck ? 'close' : 'add' }}</mat-icon>
+          {{ showAddTruck ? 'Cancel' : 'Add truck' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Add truck form -->
+    <div class="lv-card add-truck-card"
+         *ngIf="showAddTruck">
+      <div class="card-header">
+        <h3>Add truck for {{ owner.fullName }}</h3>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="truckForm"
+              (ngSubmit)="addTruck()">
+          <div class="form-grid">
+
+            <div class="lv-field">
+              <label>Plate number *</label>
+              <input type="text" formControlName="plateNumber"
+                     placeholder="KAA 001A"/>
+              <span class="field-err">{{ err('plateNumber') }}</span>
+            </div>
+
+            <div class="lv-field">
+              <label>Make *</label>
+              <select formControlName="make">
+                <option value="">Select make</option>
+                <option *ngFor="let m of makes" [value]="m">{{ m }}</option>
+              </select>
+              <span class="field-err">{{ err('make') }}</span>
+            </div>
+
+            <div class="lv-field">
+              <label>Model *</label>
+              <input type="text" formControlName="model"
+                     placeholder="FVR 34"/>
+              <span class="field-err">{{ err('model') }}</span>
+            </div>
+
+            <div class="lv-field">
+              <label>Year</label>
+              <input type="number" formControlName="year"
+                     placeholder="2020"/>
+            </div>
+
+            <div class="lv-field">
+              <label>Fuel capacity (L) *</label>
+              <input type="number" formControlName="fuelCapacityL"
+                     placeholder="300"/>
+              <span class="field-err">{{ err('fuelCapacityL') }}</span>
+            </div>
+
+            <div class="lv-field">
+              <label>Device IMEI</label>
+              <input type="text" formControlName="deviceImei"
+                     placeholder="15-digit IMEI"/>
+              <span class="field-err">{{ err('deviceImei') }}</span>
+            </div>
+
+          </div>
+
+          <div class="form-footer">
+            <button type="submit" class="btn-primary"
+                    [disabled]="addingTruck">
+              <mat-icon *ngIf="!addingTruck">add</mat-icon>
+              <mat-icon *ngIf="addingTruck" class="spin">
+                autorenew
+              </mat-icon>
+              {{ addingTruck ? 'Adding…' : 'Add truck' }}
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="detail-tabs">
+      <button class="detail-tab"
+              [class.active]="activeTab === 'trucks'"
+              (click)="activeTab = 'trucks'">
+        🚛 Trucks ({{ trucks.length }})
+      </button>
+      <button class="detail-tab"
+              [class.active]="activeTab === 'payments'"
+              (click)="activeTab = 'payments'">
+        💳 Payments ({{ payments.length }})
+      </button>
+      <button class="detail-tab"
+              [class.active]="activeTab === 'subscriptions'"
+              (click)="activeTab = 'subscriptions'">
+        📋 Subscriptions ({{ subscriptions.length }})
+      </button>
+    </div>
+
+    <!-- Trucks tab -->
+    <div class="lv-card" *ngIf="activeTab === 'trucks'">
+
+      <div class="empty-state padded"
+           *ngIf="trucks.length === 0">
+        <div class="es-icon">🚛</div>
+        <div class="es-title">No trucks registered</div>
+        <div class="es-desc">Use the Add truck button above.</div>
+      </div>
+
+      <div class="lv-table-wrap" *ngIf="trucks.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Plate</th>
+              <th>Make / Model</th>
+              <th>Year</th>
+              <th>Capacity</th>
+              <th>IMEI</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let t of trucks">
+              <td>
+                <span class="plate-badge">{{ t.plateNumber }}</span>
+              </td>
+              <td>{{ t.make }} {{ t.model }}</td>
+              <td>{{ t.year || '—' }}</td>
+              <td>{{ t.fuelCapacityL }} L</td>
+              <td>
+                <span class="imei-cell">
+                  {{ t.deviceImei || '—' }}
+                </span>
+              </td>
+              <td>
+                <span class="badge"
+                      [class]="t.status.toLowerCase()">
+                  {{ t.status | titlecase }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Payments tab -->
+    <div class="lv-card" *ngIf="activeTab === 'payments'">
+
+      <div class="empty-state padded"
+           *ngIf="payments.length === 0">
+        <div class="es-icon">💳</div>
+        <div class="es-title">No payments yet</div>
+      </div>
+
+      <div class="lv-table-wrap" *ngIf="payments.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Amount</th>
+              <th>M-Pesa receipt</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of payments">
+              <td>
+                <span class="amount-cell">
+                  KES {{ p.amountKes | number:'1.0-0' }}
+                </span>
+              </td>
+              <td>{{ p.mpesaReceiptNumber || '—' }}</td>
+              <td>{{ p.phoneNumber }}</td>
+              <td>
+                <span class="badge"
+                      [class]="p.status.toLowerCase()">
+                  {{ p.status | titlecase }}
+                </span>
+              </td>
+              <td>{{ formatDate(p.createdAt) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Subscriptions tab -->
+    <div class="lv-card" *ngIf="activeTab === 'subscriptions'">
+
+      <div class="empty-state padded"
+           *ngIf="subscriptions.length === 0">
+        <div class="es-icon">📋</div>
+        <div class="es-title">No subscriptions yet</div>
+      </div>
+
+      <div class="lv-table-wrap" *ngIf="subscriptions.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Plan</th>
+              <th>Amount</th>
+              <th>Started</th>
+              <th>Expires</th>
+              <th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let s of subscriptions">
+              <td>
+                <span class="plan-badge">
+                  {{ s.plan | titlecase }}
+                </span>
+              </td>
+              <td>KES {{ s.amountKes | number:'1.0-0' }}</td>
+              <td>{{ formatDate(s.startedAt) }}</td>
+              <td>{{ formatDate(s.expiresAt) }}</td>
+              <td>
+                <span class="badge"
+                      [class]="s.isActive ? 'active' : 'expired'">
+                  {{ s.isActive ? 'Active' : 'Expired' }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

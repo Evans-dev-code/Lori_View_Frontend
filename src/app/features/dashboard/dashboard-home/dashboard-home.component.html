@@ -1,0 +1,303 @@
+<div class="page-container">
+
+  <app-loading-spinner *ngIf="loading" message="Loading your fleet…">
+  </app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="ph-left">
+        <div class="greeting-row">
+          <h1>{{ greeting }}, {{ userName }} 👋</h1>
+          <span class="trial-pill" *ngIf="isTrial"
+                (click)="goToSubscription()">
+            ⏱ {{ trialDaysRemaining }} days left in trial
+          </span>
+        </div>
+        <p>Here's what's happening with your fleet right now.</p>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-secondary" (click)="loadAll()">
+          <mat-icon>refresh</mat-icon> Refresh
+        </button>
+        <button class="btn-primary" (click)="addTruck()">
+          <mat-icon>add</mat-icon> Add truck
+        </button>
+      </div>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="stat-grid">
+
+      <div class="stat-card" (click)="goToTrucks()">
+        <div class="sc-top">
+          <div class="sc-icon amber">🚛</div>
+          <span class="sc-trend up">{{ activeTrucks }} active</span>
+        </div>
+        <div class="sc-value">{{ totalTrucks }}</div>
+        <div class="sc-label">Total trucks</div>
+      </div>
+
+      <div class="stat-card" (click)="goToTrips()">
+        <div class="sc-top">
+          <div class="sc-icon blue">🗺️</div>
+          <span class="sc-trend up" *ngIf="ongoingTrips > 0">
+            {{ ongoingTrips }} live
+          </span>
+          <span class="sc-trend flat" *ngIf="ongoingTrips === 0">
+            None active
+          </span>
+        </div>
+        <div class="sc-value">{{ trips.length }}</div>
+        <div class="sc-label">Total trips</div>
+      </div>
+
+      <div class="stat-card" (click)="goToAlerts()">
+        <div class="sc-top">
+          <div class="sc-icon red">🔔</div>
+          <span class="sc-trend down" *ngIf="criticalAlerts > 0">
+            {{ criticalAlerts }} critical
+          </span>
+          <span class="sc-trend up" *ngIf="criticalAlerts === 0">
+            All clear
+          </span>
+        </div>
+        <div class="sc-value">{{ alerts.length }}</div>
+        <div class="sc-label">Total alerts</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon green">⛽</div>
+          <span class="sc-trend flat">This month</span>
+        </div>
+        <div class="sc-value">
+          {{ ongoingTrips > 0 ? ongoingTrips : '—' }}
+        </div>
+        <div class="sc-label">Active routes</div>
+      </div>
+
+    </div>
+
+    <!-- Fleet at a glance -->
+    <div class="lv-card summary-card">
+      <div class="card-header">
+        <h3>Fleet at a glance</h3>
+      </div>
+      <div class="card-body">
+        <app-fleet-summary
+          [trucks]="trucks"
+          [trips]="trips"
+          [alerts]="alerts">
+        </app-fleet-summary>
+      </div>
+    </div>
+
+    <!-- Live map -->
+    <div class="lv-card map-card">
+      <div class="card-header">
+        <h3>Live fleet map</h3>
+        <div class="card-actions">
+          <span class="live-chip">
+            <span class="live-dot-sm"></span>
+            Live
+          </span>
+        </div>
+      </div>
+      <div class="map-body">
+        <app-live-map [trucks]="trucks"></app-live-map>
+      </div>
+    </div>
+
+    <!-- Two column grid -->
+    <div class="main-grid">
+
+      <!-- Fleet status -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Fleet status</h3>
+          <button class="btn-secondary small" (click)="goToTrucks()">
+            View all <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+        <div class="card-body p0">
+
+          <div class="empty-state" *ngIf="trucks.length === 0">
+            <div class="es-icon">🚛</div>
+            <div class="es-title">No trucks yet</div>
+            <div class="es-desc">Add your first truck to start tracking.</div>
+            <button class="btn-primary" (click)="addTruck()">
+              <mat-icon>add</mat-icon> Add truck
+            </button>
+          </div>
+
+          <div class="truck-row"
+               *ngFor="let truck of trucks.slice(0, 6)"
+               (click)="goToTruckDetail(truck.id)">
+
+            <div class="tr-left">
+              <div class="truck-avatar">
+                <mat-icon>local_shipping</mat-icon>
+              </div>
+              <div class="truck-info">
+                <div class="truck-plate">{{ truck.plateNumber }}</div>
+                <div class="truck-meta">
+                  {{ truck.make }} {{ truck.model }}
+                  {{ truck.year ? '· ' + truck.year : '' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="tr-center">
+              <div class="fuel-bar-wrap">
+                <div class="fuel-label">Fuel</div>
+                <div class="fuel-track">
+                  <div class="fuel-fill"
+                       [style.width]="fuelPercent(truck) + '%'"
+                       [style.background]="fuelColor(fuelPercent(truck))">
+                  </div>
+                </div>
+                <div class="fuel-pct"
+                     [style.color]="fuelColor(fuelPercent(truck))">
+                  {{ fuelPercent(truck) > 0 ? fuelPercent(truck) + '%' : '—' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="tr-right">
+              <app-truck-status-badge [status]="truck.status">
+              </app-truck-status-badge>
+              <mat-icon class="row-arrow">chevron_right</mat-icon>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent alerts -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Recent alerts</h3>
+          <button class="btn-secondary small" (click)="goToAlerts()">
+            View all <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+        <div class="card-body p0">
+
+          <div class="empty-state" *ngIf="alerts.length === 0">
+            <div class="es-icon">✅</div>
+            <div class="es-title">No alerts</div>
+            <div class="es-desc">Your fleet is running smoothly.</div>
+          </div>
+
+          <div class="alert-row"
+               *ngFor="let alert of recentAlerts"
+               [class.unread]="!alert.isRead">
+
+            <div class="alert-sev-bar"
+                 [class]="getSeverityClass(alert.severity)">
+            </div>
+
+            <div class="alert-body">
+              <div class="alert-top">
+                <span class="alert-type">
+                  {{ alert.type.toString().replace('_', ' ') }}
+                </span>
+                <span class="alert-plate">{{ alert.plateNumber }}</span>
+              </div>
+              <div class="alert-msg">{{ alert.message }}</div>
+              <div class="alert-time">
+                {{ formatDate(alert.triggeredAt) }} ·
+                {{ formatTime(alert.triggeredAt) }}
+              </div>
+            </div>
+
+            <span class="badge"
+                  [class]="getSeverityClass(alert.severity)">
+              {{ alert.severity | titlecase }}
+            </span>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Recent trips -->
+    <div class="lv-card trips-card">
+      <div class="card-header">
+        <h3>Recent trips</h3>
+        <button class="btn-secondary small" (click)="goToTrips()">
+          View all <mat-icon>chevron_right</mat-icon>
+        </button>
+      </div>
+
+      <div class="empty-state padded" *ngIf="trips.length === 0">
+        <div class="es-icon">🗺️</div>
+        <div class="es-title">No trips yet</div>
+        <div class="es-desc">
+          Trips will appear here once your trucks start moving.
+        </div>
+      </div>
+
+      <div class="lv-table-wrap" *ngIf="trips.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Truck</th>
+              <th>Route</th>
+              <th>Started</th>
+              <th>Distance</th>
+              <th>Fuel used</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trip of recentTrips"
+                (click)="goToTripDetail(trip.id)"
+                class="clickable-row">
+              <td>
+                <span class="plate-cell">
+                  {{ trip.plateNumber || '—' }}
+                </span>
+              </td>
+              <td>
+                <div class="route-cell">
+                  <span class="route-from">{{ trip.origin }}</span>
+                  <mat-icon class="route-arrow">arrow_forward</mat-icon>
+                  <span class="route-to">{{ trip.destination }}</span>
+                </div>
+              </td>
+              <td>{{ formatDate(trip.startedAt) }}</td>
+              <td>
+                {{ trip.distanceKm
+                   ? (trip.distanceKm | number:'1.0-0') + ' km'
+                   : '—' }}
+              </td>
+              <td>
+                {{ trip.fuelUsedL
+                   ? (trip.fuelUsedL | number:'1.1-1') + ' L'
+                   : '—' }}
+              </td>
+              <td>
+                <span class="badge"
+                      [class]="getStatusClass(trip.status)">
+                  {{ trip.status | titlecase }}
+                </span>
+              </td>
+              <td>
+                <mat-icon class="row-arrow">chevron_right</mat-icon>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

@@ -1,0 +1,297 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Fuel Analytics</h1>
+      <p>Monitor fuel consumption and efficiency across your fleet</p>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Summary cards -->
+    <div class="stat-grid">
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon amber">⛽</div>
+          <span class="sc-trend flat">All trucks</span>
+        </div>
+        <div class="sc-value">
+          {{ totalFuelUsedThisMonth | number:'1.0-0' }} L
+        </div>
+        <div class="sc-label">Total fuel used</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon green">📊</div>
+          <span class="sc-trend up">Fleet avg</span>
+        </div>
+        <div class="sc-value">
+          {{ avgEfficiency > 0 ? avgEfficiency : '—' }}
+          <span class="sc-unit" *ngIf="avgEfficiency > 0">km/L</span>
+        </div>
+        <div class="sc-label">Fuel efficiency</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon blue">🚛</div>
+        </div>
+        <div class="sc-value">{{ trucks.length }}</div>
+        <div class="sc-label">Trucks monitored</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon indigo">✅</div>
+        </div>
+        <div class="sc-value">{{ completedTrips.length }}</div>
+        <div class="sc-label">Trips completed</div>
+      </div>
+
+    </div>
+
+    <!-- Truck selector + date range -->
+    <div class="controls-bar lv-card">
+      <div class="card-body controls-inner">
+
+        <div class="truck-tabs">
+          <button *ngFor="let truck of trucks"
+                  class="truck-tab"
+                  [class.active]="selectedTruckId === truck.id"
+                  (click)="selectTruck(truck.id)">
+            🚛 {{ truck.plateNumber }}
+          </button>
+        </div>
+
+        <div class="date-range">
+          <div class="lv-field inline">
+            <label>From</label>
+            <input type="date"
+                   [(ngModel)]="dateFrom"
+                   (change)="loadReadings()"/>
+          </div>
+          <div class="lv-field inline">
+            <label>To</label>
+            <input type="date"
+                   [(ngModel)]="dateTo"
+                   (change)="loadReadings()"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Empty state when no trucks -->
+    <div class="lv-card" *ngIf="trucks.length === 0">
+      <div class="empty-state padded">
+        <div class="es-icon">🚛</div>
+        <div class="es-title">No trucks registered</div>
+        <div class="es-desc">
+          Add a truck to start monitoring fuel consumption.
+        </div>
+      </div>
+    </div>
+
+    <!-- Truck detail + chart -->
+    <div class="fuel-grid" *ngIf="selectedTruck">
+
+      <!-- Fuel gauge card -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>{{ selectedTruck.plateNumber }} — Current level</h3>
+        </div>
+        <div class="card-body gauge-body">
+
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 200 120" class="gauge-svg">
+              <!-- Background arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none"
+                    stroke="var(--border)"
+                    stroke-width="14"
+                    stroke-linecap="round"/>
+              <!-- Fuel level arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100"
+                    fill="none"
+                    [attr.stroke]="fuelColor(currentFuelPct)"
+                    stroke-width="14"
+                    stroke-linecap="round"
+                    [attr.stroke-dasharray]="(currentFuelPct / 100 * 251) + ' 251'"
+                    stroke-dashoffset="0"/>
+              <!-- Percentage text -->
+              <text x="100" y="88"
+                    text-anchor="middle"
+                    font-family="Syne"
+                    font-size="26"
+                    font-weight="800"
+                    fill="var(--text-primary)">
+                {{ currentFuelPct }}%
+              </text>
+              <text x="100" y="106"
+                    text-anchor="middle"
+                    font-size="11"
+                    fill="var(--text-muted)">
+                Fuel level
+              </text>
+            </svg>
+          </div>
+
+          <div class="gauge-detail">
+
+            <div class="gd-row">
+              <span>Current level</span>
+              <span [style.color]="fuelColor(currentFuelPct)">
+                {{ selectedTruck.currentFuelLevel
+                   ? selectedTruck.currentFuelLevel + ' L'
+                   : '—' }}
+              </span>
+            </div>
+
+            <div class="gd-row">
+              <span>Tank capacity</span>
+              <span>
+                {{ selectedTruck.fuelCapacityL
+                   ? selectedTruck.fuelCapacityL + ' L'
+                   : '—' }}
+              </span>
+            </div>
+
+            <div class="gd-row">
+              <span>Make / Model</span>
+              <span>
+                {{ selectedTruck.make }} {{ selectedTruck.model }}
+              </span>
+            </div>
+
+            <div class="gd-row">
+              <span>Status</span>
+              <span>
+                <span class="badge"
+                      [class]="selectedTruck.status.toLowerCase()">
+                  {{ selectedTruck.status | titlecase }}
+                </span>
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Fuel chart card -->
+      <div class="lv-card chart-card">
+        <div class="card-header">
+          <h3>Fuel level over time</h3>
+          <span class="count-chip" *ngIf="fuelReadings.length > 0">
+            {{ fuelReadings.length }} readings
+          </span>
+        </div>
+        <div class="card-body">
+          <app-loading-spinner
+            *ngIf="loadingReadings"
+            size="sm">
+          </app-loading-spinner>
+          <app-fuel-chart
+            *ngIf="!loadingReadings"
+            [readings]="fuelReadings"
+            [capacity]="selectedTruck.fuelCapacityL || 300">
+          </app-fuel-chart>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Per-trip fuel table -->
+    <div class="lv-card">
+      <div class="card-header">
+        <h3>Fuel per trip</h3>
+        <span class="count-chip" *ngIf="completedTrips.length > 0">
+          {{ completedTrips.length }} trips
+        </span>
+      </div>
+
+      <div class="empty-state padded"
+           *ngIf="completedTrips.length === 0">
+        <div class="es-icon">⛽</div>
+        <div class="es-title">No completed trips yet</div>
+        <div class="es-desc">
+          Fuel data will appear after trips are completed.
+        </div>
+      </div>
+
+      <div class="lv-table-wrap"
+           *ngIf="completedTrips.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Truck</th>
+              <th>Route</th>
+              <th>Started</th>
+              <th>Distance</th>
+              <th>Fuel used</th>
+              <th>Efficiency</th>
+              <th>Cost (est.)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trip of completedTrips">
+
+              <td>
+                <span class="plate-cell">{{ trip.plateNumber }}</span>
+              </td>
+
+              <td>
+                <div class="route-col">
+                  <span class="rc-from">{{ trip.origin }}</span>
+                  <span class="rc-arrow">→</span>
+                  <span class="rc-to">{{ trip.destination }}</span>
+                </div>
+              </td>
+
+              <td>{{ formatDate(trip.startedAt) }}</td>
+
+              <td>
+                {{ trip.distanceKm
+                   ? (trip.distanceKm | number:'1.0-0') + ' km'
+                   : '—' }}
+              </td>
+
+              <td>
+                <span class="fuel-cell">
+                  {{ trip.fuelUsedL
+                     ? (trip.fuelUsedL | number:'1.1-1') + ' L'
+                     : '—' }}
+                </span>
+              </td>
+
+              <td>
+                <span class="eff-cell"
+                      [class.good]="trip.fuelEfficiencyKmL >= 5"
+                      [class.bad]="trip.fuelEfficiencyKmL < 3">
+                  {{ trip.fuelEfficiencyKmL
+                     ? (trip.fuelEfficiencyKmL | number:'1.1-1') + ' km/L'
+                     : '—' }}
+                </span>
+              </td>
+
+              <td>
+                {{ trip.fuelUsedL
+                   ? 'KES ' + (trip.fuelUsedL * 185 | number:'1.0-0')
+                   : '—' }}
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

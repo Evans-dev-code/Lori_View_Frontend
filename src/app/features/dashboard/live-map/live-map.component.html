@@ -1,0 +1,31 @@
+<div class="map-wrapper">
+
+  <!-- Map container -->
+  <div id="live-map-container" class="map-container"></div>
+
+  <!-- No GPS overlay -->
+  <div class="no-gps-overlay"
+       *ngIf="mapReady && trucks.length > 0
+              && !trucks[0]?.lastLatitude">
+    <div class="ngo-icon">📡</div>
+    <div class="ngo-title">Waiting for GPS data</div>
+    <div class="ngo-sub">
+      Trucks will appear on the map once GPS trackers
+      start sending location data.
+    </div>
+  </div>
+
+  <!-- Empty fleet overlay -->
+  <div class="no-gps-overlay" *ngIf="mapReady && trucks.length === 0">
+    <div class="ngo-icon">🚛</div>
+    <div class="ngo-title">No trucks registered</div>
+    <div class="ngo-sub">Add a truck to see it on the map.</div>
+  </div>
+
+  <!-- Truck count badge -->
+  <div class="map-badge" *ngIf="trucks.length > 0">
+    <span class="live-dot"></span>
+    {{ trucks.length }} truck{{ trucks.length !== 1 ? 's' : '' }}
+  </div>
+
+</div>

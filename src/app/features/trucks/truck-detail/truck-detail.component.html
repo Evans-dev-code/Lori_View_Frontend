@@ -1,0 +1,222 @@
+<div class="page-container">
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading && truck">
+
+    <!-- Header -->
+    <div class="page-header">
+      <div class="ph-left">
+        <button class="back-btn" (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>
+          <div class="plate-title">{{ truck.plateNumber }}</div>
+          <p>{{ truck.make }} {{ truck.model }}
+             {{ truck.year ? '· ' + truck.year : '' }}</p>
+        </div>
+      </div>
+      <div class="ph-actions">
+        <button class="btn-secondary" (click)="editTruck()">
+          <mat-icon>edit</mat-icon> Edit
+        </button>
+      </div>
+    </div>
+
+    <!-- Overview cards -->
+    <div class="overview-strip">
+
+      <div class="ov-card">
+        <div class="ov-icon" style="background:var(--amber-dim)">
+          <mat-icon style="color:var(--amber)">local_gas_station</mat-icon>
+        </div>
+        <div class="ov-body">
+          <div class="ov-val"
+               [style.color]="fuelColor()">
+            {{ fuelPercent() > 0 ? fuelPercent() + '%' : '—' }}
+          </div>
+          <div class="ov-label">Fuel level</div>
+        </div>
+      </div>
+
+      <div class="ov-card">
+        <div class="ov-icon" style="background:var(--info-dim)">
+          <mat-icon style="color:var(--info)">speed</mat-icon>
+        </div>
+        <div class="ov-body">
+          <div class="ov-val">
+            {{ truck.currentSpeedKmh != null
+               ? truck.currentSpeedKmh + ' km/h'
+               : '—' }}
+          </div>
+          <div class="ov-label">Current speed</div>
+        </div>
+      </div>
+
+      <div class="ov-card">
+        <div class="ov-icon" style="background:var(--success-dim)">
+          <mat-icon style="color:var(--success)">route</mat-icon>
+        </div>
+        <div class="ov-body">
+          <div class="ov-val">{{ trips.length }}</div>
+          <div class="ov-label">Total trips</div>
+        </div>
+      </div>
+
+      <div class="ov-card">
+        <div class="ov-icon" style="background:var(--danger-dim)">
+          <mat-icon style="color:var(--danger)">notifications</mat-icon>
+        </div>
+        <div class="ov-body">
+          <div class="ov-val">{{ alerts.length }}</div>
+          <div class="ov-label">Unread alerts</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-bar">
+      <button *ngFor="let tab of ['overview','trips','alerts']"
+              class="tab-btn"
+              [class.active]="activeTab === tab"
+              (click)="activeTab = tab">
+        {{ tab | titlecase }}
+      </button>
+    </div>
+
+    <!-- Overview tab -->
+    <div *ngIf="activeTab === 'overview'">
+      <div class="detail-grid">
+
+        <div class="lv-card">
+          <div class="card-header"><h3>Vehicle details</h3></div>
+          <div class="card-body">
+            <div class="detail-row" *ngFor="let row of [
+              {label:'Plate number',   val: truck.plateNumber},
+              {label:'Make',           val: truck.make || '—'},
+              {label:'Model',          val: truck.model || '—'},
+              {label:'Year',           val: truck.year || '—'},
+              {label:'Tank capacity',  val: truck.fuelCapacityL ? truck.fuelCapacityL + ' L' : '—'},
+              {label:'GPS IMEI',       val: truck.deviceImei || 'Not configured'},
+              {label:'Registered',     val: formatDate(truck.createdAt)}
+            ]">
+              <span class="dr-label">{{ row.label }}</span>
+              <span class="dr-val">{{ row.val }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="lv-card">
+          <div class="card-header"><h3>Status control</h3></div>
+          <div class="card-body">
+            <p class="status-hint">
+              Change this truck's operational status.
+            </p>
+            <div class="status-btns">
+              <button *ngFor="let s of ['ACTIVE','MAINTENANCE','INACTIVE']"
+                      class="status-action"
+                      [class.current]="truck.status === s"
+                      (click)="updateStatus(s)">
+                <span class="badge" [class]="s.toLowerCase()">
+                  {{ s | titlecase }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Trips tab -->
+    <div *ngIf="activeTab === 'trips'">
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Trip history</h3>
+          <span class="count-chip">{{ trips.length }}</span>
+        </div>
+
+        <div class="empty-state padded" *ngIf="trips.length === 0">
+          <div class="es-icon">🗺️</div>
+          <div class="es-title">No trips yet</div>
+          <div class="es-desc">Trips will appear here once the truck starts moving.</div>
+        </div>
+
+        <div class="lv-table-wrap" *ngIf="trips.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>Route</th>
+                <th>Started</th>
+                <th>Distance</th>
+                <th>Fuel</th>
+                <th>Efficiency</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let trip of trips"
+                  (click)="goToTripDetail(trip.id)"
+                  class="clickable-row">
+                <td>
+                  <div class="route-cell">
+                    {{ trip.origin }} → {{ trip.destination }}
+                  </div>
+                </td>
+                <td>{{ formatDate(trip.startedAt) }}</td>
+                <td>{{ trip.distanceKm ? (trip.distanceKm | number:'1.0-0') + ' km' : '—' }}</td>
+                <td>{{ trip.fuelUsedL ? (trip.fuelUsedL | number:'1.1-1') + ' L' : '—' }}</td>
+                <td>{{ trip.fuelEfficiencyKmL ? (trip.fuelEfficiencyKmL | number:'1.1-1') + ' km/L' : '—' }}</td>
+                <td>
+                  <span class="badge" [class]="trip.status.toLowerCase()">
+                    {{ trip.status | titlecase }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Alerts tab -->
+    <div *ngIf="activeTab === 'alerts'">
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Unread alerts</h3>
+          <span class="count-chip danger" *ngIf="alerts.length > 0">
+            {{ alerts.length }}
+          </span>
+        </div>
+
+        <div class="empty-state padded" *ngIf="alerts.length === 0">
+          <div class="es-icon">✅</div>
+          <div class="es-title">No alerts</div>
+          <div class="es-desc">This truck has no unread alerts.</div>
+        </div>
+
+        <div class="alert-list" *ngIf="alerts.length > 0">
+          <div *ngFor="let alert of alerts" class="alert-row-detail">
+            <div class="ard-sev" [class]="alert.severity.toLowerCase()"></div>
+            <div class="ard-body">
+              <div class="ard-top">
+                <span class="ard-type">
+                  {{ alert.type.replace('_',' ') }}
+                </span>
+                <span class="badge" [class]="alert.severity.toLowerCase()">
+                  {{ alert.severity | titlecase }}
+                </span>
+              </div>
+              <div class="ard-msg">{{ alert.message }}</div>
+              <div class="ard-time">{{ formatDate(alert.triggeredAt) }}</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+
+</div>

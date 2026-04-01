@@ -1,0 +1,184 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Admin Panel</h1>
+      <p>Full platform visibility — super admin only</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn-secondary"
+              (click)="ngOnInit()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+    </div>
+  </div>
+
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <ng-container *ngIf="!loading">
+
+    <!-- Admin banner -->
+    <div class="admin-banner">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <div>
+        <div class="ab-title">Super Admin Access</div>
+        <div class="ab-sub">
+          You have full visibility and control over all owners,
+          trucks, trips and payments on the platform.
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat grid -->
+    <div class="stat-grid">
+
+      <div class="stat-card"
+           (click)="router.navigate(['/admin/owners'])">
+        <div class="sc-top">
+          <div class="sc-icon blue">👤</div>
+          <span class="sc-trend up">
+            {{ stats.newOwnersThisMonth }} this month
+          </span>
+        </div>
+        <div class="sc-value">{{ stats.totalOwners }}</div>
+        <div class="sc-label">Fleet owners</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon amber">🚛</div>
+          <span class="sc-trend flat">All time</span>
+        </div>
+        <div class="sc-value">{{ stats.totalTrucks }}</div>
+        <div class="sc-label">Registered trucks</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon green">🗺️</div>
+          <span class="sc-trend up">
+            {{ stats.tripsThisMonth }} this month
+          </span>
+        </div>
+        <div class="sc-value">{{ stats.totalTrips }}</div>
+        <div class="sc-label">Total trips</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="sc-top">
+          <div class="sc-icon indigo">💳</div>
+          <span class="sc-trend up">Active</span>
+        </div>
+        <div class="sc-value">{{ stats.activeSubscribers }}</div>
+        <div class="sc-label">Subscribers</div>
+      </div>
+
+    </div>
+
+    <!-- Revenue + owner breakdown grid -->
+    <div class="admin-grid">
+
+      <!-- Revenue card -->
+      <div class="lv-card revenue-card">
+        <div class="card-header">
+          <h3>Platform revenue</h3>
+        </div>
+        <div class="card-body revenue-body">
+          <div class="rev-label">Total all time</div>
+          <div class="rev-amount">
+            KES {{ stats.totalRevenueKes | number:'1.0-0' }}
+          </div>
+          <div class="rev-monthly-label">This month</div>
+          <div class="rev-monthly">
+            KES {{ stats.monthlyRevenueKes | number:'1.0-0' }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Owner status breakdown -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Owner accounts</h3>
+        </div>
+        <div class="card-body">
+          <div class="breakdown-row">
+            <div class="br-left">
+              <div class="br-dot trial"></div>
+              <span>Trial</span>
+            </div>
+            <div class="br-right">
+              <span class="br-count">{{ stats.trialOwners }}</span>
+              <div class="br-bar">
+                <div class="br-fill trial"
+                     [style.width]="pct(stats.trialOwners,
+                       stats.totalOwners) + '%'">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="breakdown-row">
+            <div class="br-left">
+              <div class="br-dot active"></div>
+              <span>Active</span>
+            </div>
+            <div class="br-right">
+              <span class="br-count">{{ stats.activeOwners }}</span>
+              <div class="br-bar">
+                <div class="br-fill active"
+                     [style.width]="pct(stats.activeOwners,
+                       stats.totalOwners) + '%'">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="breakdown-row">
+            <div class="br-left">
+              <div class="br-dot expired"></div>
+              <span>Expired</span>
+            </div>
+            <div class="br-right">
+              <span class="br-count">{{ stats.expiredOwners }}</span>
+              <div class="br-bar">
+                <div class="br-fill expired"
+                     [style.width]="pct(stats.expiredOwners,
+                       stats.totalOwners) + '%'">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick nav cards -->
+    <div class="quick-nav">
+
+      <div class="qn-card"
+           (click)="router.navigate(['/admin/owners'])">
+        <div class="qn-icon">👤</div>
+        <div class="qn-title">All owners</div>
+        <div class="qn-sub">
+          View all registered owners, manage accounts,
+          add trucks on their behalf
+        </div>
+        <mat-icon class="qn-arrow">arrow_forward</mat-icon>
+      </div>
+
+      <div class="qn-card"
+           (click)="router.navigate(['/admin/payments'])">
+        <div class="qn-icon">💳</div>
+        <div class="qn-title">All payments</div>
+        <div class="qn-sub">
+          Every M-Pesa transaction across the platform
+        </div>
+        <mat-icon class="qn-arrow">arrow_forward</mat-icon>
+      </div>
+
+    </div>
+
+  </ng-container>
+
+</div>

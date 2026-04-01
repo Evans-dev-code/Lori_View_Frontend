@@ -1,0 +1,10 @@
+<div class="chart-container">
+  <div class="no-data" *ngIf="readings.length === 0">
+    <div class="nd-icon">📈</div>
+    <div class="nd-title">No fuel readings in this range</div>
+    <div class="nd-sub">
+      Adjust the date range or connect a fuel sensor.
+    </div>
+  </div>
+  <canvas id="fuel-chart-canvas" *ngIf="readings.length > 0"></canvas>
+</div>

@@ -1,0 +1,137 @@
+<div class="page-container">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Alerts</h1>
+      <p>{{ alerts.length }} total ·
+         {{ unreadCount }} unread ·
+         {{ criticalCount }} critical</p>
+    </div>
+    <div class="ph-actions">
+      <button class="btn-secondary" (click)="loadAlerts()">
+        <mat-icon>refresh</mat-icon> Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Summary strip -->
+  <div class="alert-summary">
+    <div class="as-card critical">
+      <div class="as-val">{{ criticalCount }}</div>
+      <div class="as-lbl">Critical</div>
+    </div>
+    <div class="as-card high">
+      <div class="as-val">{{ highCount }}</div>
+      <div class="as-lbl">High</div>
+    </div>
+    <div class="as-card unread">
+      <div class="as-val">{{ unreadCount }}</div>
+      <div class="as-lbl">Unread</div>
+    </div>
+    <div class="as-card total">
+      <div class="as-val">{{ alerts.length }}</div>
+      <div class="as-lbl">Total</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <mat-icon>search</mat-icon>
+      <input type="text"
+             placeholder="Search alerts…"
+             [value]="search"
+             (input)="search = $any($event.target).value; applyFilter()"/>
+    </div>
+
+    <select class="filter-select"
+            [(ngModel)]="filterSeverity"
+            (change)="applyFilter()">
+      <option *ngFor="let s of severities" [value]="s">
+        {{ s === 'ALL' ? 'All severities' : (s | titlecase) }}
+      </option>
+    </select>
+
+    <select class="filter-select"
+            [(ngModel)]="filterType"
+            (change)="applyFilter()">
+      <option *ngFor="let t of types" [value]="t">
+        {{ t === 'ALL' ? 'All types' : typeLabel(t) }}
+      </option>
+    </select>
+
+    <select class="filter-select"
+            [(ngModel)]="filterTruck"
+            (change)="applyFilter()">
+      <option value="ALL">All trucks</option>
+      <option *ngFor="let t of trucks" [value]="t.id">
+        {{ t.plateNumber }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+  <!-- Empty -->
+  <div class="lv-card" *ngIf="!loading && filtered.length === 0">
+    <div class="empty-state padded">
+      <div class="es-icon">✅</div>
+      <div class="es-title">No alerts found</div>
+      <div class="es-desc">
+        {{ alerts.length === 0
+           ? 'Your fleet is running smoothly.'
+           : 'No alerts match your filters.' }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert list -->
+  <div class="lv-card" *ngIf="!loading && filtered.length > 0">
+    <div class="alert-list">
+      <div *ngFor="let alert of filtered"
+           class="alert-item"
+           [class.unread]="!alert.isRead">
+
+        <!-- Severity bar -->
+        <div class="sev-bar" [class]="severityClass(alert.severity)"></div>
+
+        <!-- Icon -->
+        <div class="alert-icon" [class]="severityClass(alert.severity)">
+          <mat-icon>
+            {{ alert.severity === 'CRITICAL' ? 'error' :
+               alert.severity === 'HIGH'     ? 'warning' :
+               alert.severity === 'MEDIUM'   ? 'info' : 'check_circle' }}
+          </mat-icon>
+        </div>
+
+        <!-- Content -->
+        <div class="alert-content">
+          <div class="ac-top">
+            <span class="ac-type">{{ typeLabel(alert.type) }}</span>
+            <span class="ac-plate">{{ alert.plateNumber }}</span>
+            <span class="unread-dot" *ngIf="!alert.isRead"></span>
+          </div>
+          <div class="ac-msg">{{ alert.message }}</div>
+          <div class="ac-time">{{ formatDate(alert.triggeredAt) }}</div>
+        </div>
+
+        <!-- Right side -->
+        <div class="alert-right">
+          <span class="badge" [class]="severityClass(alert.severity)">
+            {{ alert.severity | titlecase }}
+          </span>
+          <button class="mark-read-btn"
+                  *ngIf="!alert.isRead"
+                  (click)="markRead(alert.truckId)"
+                  matTooltip="Mark as read">
+            <mat-icon>done_all</mat-icon>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

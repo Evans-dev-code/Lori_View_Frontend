@@ -1,0 +1,265 @@
+<div class="auth-shell">
+
+  <!-- ═══════════════════════════════════════
+       LEFT — scrollable insight panel
+  ════════════════════════════════════════ -->
+  <aside class="insight-panel">
+    <div class="insight-scroll">
+
+      <!-- Background fx -->
+      <div class="grid-bg"></div>
+      <div class="blob blob-top"></div>
+      <div class="blob blob-btm"></div>
+      <div class="particles">
+        <i *ngFor="let n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]"
+           class="dot" [attr.data-i]="n"></i>
+      </div>
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="logomark">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+            <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+                  stroke="#fff" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+            <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+          </svg>
+        </div>
+        <span class="brand-name">LoriView</span>
+        <span class="brand-tag">Fleet Intelligence</span>
+      </div>
+
+      <!-- Hero headline -->
+      <div class="hero">
+        <h1>
+          Your trucks.<br>
+          <em>Everywhere.</em><br>
+          Always visible.
+        </h1>
+        <p>
+          The only fleet management platform built for East African long-haul
+          routes. Real-time GPS, fuel monitoring, and intelligent alerts —
+          from Mombasa to Kampala and beyond.
+        </p>
+      </div>
+
+      <!-- Rotating stat ticker -->
+      <div class="stat-ticker">
+        <div class="ticker-track"
+             [style.transform]="'translateY(-' + activeStatIndex * 100 + '%)'">
+          <div *ngFor="let s of stats" class="ticker-item">
+            <span class="ti-icon">{{ s.icon }}</span>
+            <span class="ti-val">{{ s.value }}</span>
+            <span class="ti-lbl">{{ s.label }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live routes -->
+      <div class="section-block">
+        <div class="section-label">
+          <span class="live-dot"></span>
+          Active routes right now
+        </div>
+        <div class="route-grid">
+          <div *ngFor="let r of routes" class="route-card"
+               [class.live]="r.active">
+            <div class="rc-path">
+              <span class="rc-city">{{ r.from }}</span>
+              <span class="rc-arrow">→</span>
+              <span class="rc-city">{{ r.to }}</span>
+            </div>
+            <div class="rc-meta">
+              <span class="rc-km">{{ r.km }} km</span>
+              <span class="rc-trucks">
+                <span class="truck-icon">🚛</span>
+                {{ r.trucks }}
+              </span>
+              <span class="rc-status" [class.live]="r.active">
+                {{ r.active ? 'Live' : 'Idle' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features grid -->
+      <div class="section-block">
+        <div class="section-label">Everything in one platform</div>
+        <div class="features-grid">
+          <div *ngFor="let f of features; let i = index"
+               class="feat-card"
+               [style.animation-delay]="(i * 0.08) + 's'">
+            <div class="feat-icon">{{ f.icon }}</div>
+            <div class="feat-body">
+              <div class="feat-title">{{ f.title }}</div>
+              <div class="feat-desc">{{ f.desc }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Testimonials -->
+      <div class="section-block">
+        <div class="section-label">Trusted by fleet owners</div>
+        <div class="testi-list">
+          <div *ngFor="let t of testimonials" class="testi-card">
+            <div class="testi-quote">"{{ t.quote }}"</div>
+            <div class="testi-author">
+              <div class="testi-avatar"
+                   [style.background]="t.color + '22'"
+                   [style.color]="t.color">{{ t.avatar }}</div>
+              <div>
+                <div class="testi-name">{{ t.name }}</div>
+                <div class="testi-role">{{ t.role }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing snapshot -->
+      <div class="section-block">
+        <div class="section-label">Simple monthly pricing</div>
+        <div class="plan-row">
+          <div *ngFor="let p of plans" class="plan-card"
+               [class.popular]="p.popular"
+               [style.border-color]="p.popular ? p.color : ''">
+            <div *ngIf="p.popular" class="plan-badge"
+                 [style.background]="p.color">Most popular</div>
+            <div class="plan-name" [style.color]="p.color">{{ p.name }}</div>
+            <div class="plan-price">{{ p.price }}<span>/mo</span></div>
+            <div class="plan-trucks">{{ p.trucks }}</div>
+          </div>
+        </div>
+        <p class="plan-note">
+          Start with a <strong>14-day free trial</strong> — no credit card required.
+          Pay only via M-Pesa when you're ready.
+        </p>
+      </div>
+
+      <!-- Trust bar -->
+      <div class="trust-bar">
+        <div class="trust-item">
+          <span class="ti-icon">🔒</span>
+          <span>Bank-grade security</span>
+        </div>
+        <div class="trust-sep"></div>
+        <div class="trust-item">
+          <span class="ti-icon">📱</span>
+          <span>M-Pesa payments</span>
+        </div>
+        <div class="trust-sep"></div>
+        <div class="trust-item">
+          <span class="ti-icon">🌍</span>
+          <span>Kenya · Uganda · Tanzania</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="insight-footer">
+        © 2026 LoriView · Built for East Africa
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════
+       RIGHT — sticky login form
+  ════════════════════════════════════════ -->
+  <main class="form-panel">
+
+    <!-- Mobile brand -->
+    <div class="mobile-brand">
+      <svg width="30" height="30" viewBox="0 0 38 38" fill="none">
+        <rect width="38" height="38" rx="11" fill="#f59e0b"/>
+        <path d="M7 26 L12 17 L18 21 L24 11 L31 26"
+              stroke="#fff" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="12" cy="17" r="2.2" fill="#fff"/>
+        <circle cx="24" cy="11" r="2.2" fill="#fff"/>
+      </svg>
+      <span>LoriView</span>
+    </div>
+
+    <div class="form-box">
+
+      <div class="form-head">
+        <h2>Sign in</h2>
+        <p>Access your fleet dashboard</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+        <!-- Email -->
+        <div class="field">
+          <label>Email address</label>
+          <div class="input-row"
+               [class.touched-err]="loginForm.get('email')?.invalid
+                                  && loginForm.get('email')?.touched">
+            <mat-icon>mail_outline</mat-icon>
+            <input type="email" formControlName="email"
+                   placeholder="you@company.com"
+                   autocomplete="email"/>
+          </div>
+          <span class="err"
+                *ngIf="loginForm.get('email')?.invalid
+                       && loginForm.get('email')?.touched">
+            {{ emailError() }}
+          </span>
+        </div>
+
+        <!-- Password -->
+        <div class="field">
+          <label>Password</label>
+          <div class="input-row"
+               [class.touched-err]="loginForm.get('password')?.invalid
+                                  && loginForm.get('password')?.touched">
+            <mat-icon>lock_outline</mat-icon>
+            <input [type]="hidePassword ? 'password' : 'text'"
+                   formControlName="password"
+                   placeholder="Your password"
+                   autocomplete="current-password"/>
+            <button type="button" class="eye-btn"
+                    (click)="hidePassword = !hidePassword">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+          </div>
+          <span class="err"
+                *ngIf="loginForm.get('password')?.invalid
+                       && loginForm.get('password')?.touched">
+            {{ passwordError() }}
+          </span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="cta-btn" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Sign in to dashboard</span>
+          <span *ngIf="isLoading" class="loading-row">
+            <mat-icon class="spin">autorenew</mat-icon>Signing in…
+          </span>
+        </button>
+
+      </form>
+
+      <div class="or-sep"><span>New to LoriView?</span></div>
+
+      <a routerLink="/auth/register" class="alt-btn">
+        Create free account
+        <span class="trial-chip">14-day trial</span>
+      </a>
+
+      <div class="form-links">
+        <a href="#">Privacy Policy</a>
+        <span>·</span>
+        <a href="#">Help & Support</a>
+        <span>·</span>
+        <span>v2.0</span>
+      </div>
+
+    </div>
+  </main>
+
+</div>

@@ -1,0 +1,14 @@
+<div class="trip-map-wrapper">
+
+  <div id="trip-map-container" class="trip-map-container"></div>
+
+  <div class="no-route-overlay"
+       *ngIf="mapReady && pings.length === 0">
+    <div class="nro-icon">📡</div>
+    <div class="nro-title">No route data yet</div>
+    <div class="nro-sub">
+      GPS pings will appear here once the tracker sends data.
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,256 @@
+<div class="page-container">
+
+  <div class="page-header">
+    <div class="ph-left">
+      <h1>Profile & Settings</h1>
+      <p>Manage your account details and preferences</p>
+    </div>
+  </div>
+
+  <div class="profile-layout">
+
+    <!-- Left — account card -->
+    <div class="left-col">
+
+      <!-- Account overview -->
+      <div class="lv-card account-card">
+        <div class="card-body account-body">
+          <div class="account-avatar">{{ initials }}</div>
+          <div class="account-name">{{ user?.fullName }}</div>
+          <div class="account-email">{{ user?.email }}</div>
+
+          <span class="badge" [class]="accountStatus.toLowerCase()">
+            {{ accountStatus | titlecase }}
+          </span>
+
+          <div class="trial-info"
+               *ngIf="accountStatus === 'TRIAL'">
+            {{ trialDays }} day{{ trialDays !== 1 ? 's' : '' }}
+            remaining in trial
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="lv-card">
+        <div class="card-header"><h3>Your fleet at a glance</h3></div>
+        <div class="card-body">
+          <div class="stat-row">
+            <span class="sr-label">Registered trucks</span>
+            <span class="sr-val">{{ truckCount }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="sr-label">Total trips</span>
+            <span class="sr-val">{{ tripCount }}</span>
+          </div>
+          <div class="stat-row">
+            <span class="sr-label">Account status</span>
+            <span class="sr-val">
+              <span class="badge"
+                    [class]="accountStatus.toLowerCase()">
+                {{ accountStatus | titlecase }}
+              </span>
+            </span>
+          </div>
+          <div class="stat-row">
+            <span class="sr-label">Member since</span>
+            <span class="sr-val">2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Danger zone -->
+      <div class="lv-card danger-card">
+        <div class="card-header"><h3>Account actions</h3></div>
+        <div class="card-body">
+          <button class="btn-secondary danger-btn"
+                  (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Sign out of all devices
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right — forms -->
+    <div class="right-col">
+
+      <!-- Edit profile -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Personal information</h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+
+            <div class="lv-field">
+              <label>Full name</label>
+              <input type="text" formControlName="fullName"
+                     placeholder="James Kamau"/>
+              <span class="field-err"
+                    *ngIf="profileForm.get('fullName')?.invalid
+                           && profileForm.get('fullName')?.touched">
+                Full name is required
+              </span>
+            </div>
+
+            <div class="lv-field">
+              <label>Email address</label>
+              <input type="email"
+                     [value]="user?.email || ''"
+                     disabled
+                     class="disabled-field"/>
+              <div class="field-hint">
+                Email cannot be changed. Contact support if needed.
+              </div>
+            </div>
+
+            <div class="lv-field">
+              <label>M-Pesa phone number</label>
+              <input type="tel" formControlName="phone"
+                     placeholder="0712 345 678"/>
+              <span class="field-err"
+                    *ngIf="profileForm.get('phone')?.invalid
+                           && profileForm.get('phone')?.touched">
+                Enter a valid Kenyan number
+              </span>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary"
+                      [disabled]="saving">
+                <mat-icon *ngIf="!saving">save</mat-icon>
+                <mat-icon *ngIf="saving" class="spin">
+                  autorenew
+                </mat-icon>
+                {{ saving ? 'Saving…' : 'Save changes' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- Change password -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>Change password</h3>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="savePassword()">
+
+            <div class="lv-field">
+              <label>New password</label>
+              <div class="pw-wrap">
+                <input [type]="hideNewPw ? 'password' : 'text'"
+                       formControlName="newPassword"
+                       placeholder="Minimum 6 characters"/>
+                <button type="button" class="eye-btn"
+                        (click)="hideNewPw = !hideNewPw">
+                  <mat-icon>
+                    {{ hideNewPw ? 'visibility_off' : 'visibility' }}
+                  </mat-icon>
+                </button>
+              </div>
+              <span class="field-err"
+                    *ngIf="passwordForm.get('newPassword')?.invalid
+                           && passwordForm.get('newPassword')?.touched">
+                Minimum 6 characters
+              </span>
+            </div>
+
+            <div class="lv-field">
+              <label>Confirm new password</label>
+              <div class="pw-wrap">
+                <input [type]="hidePw ? 'password' : 'text'"
+                       formControlName="confirm"
+                       placeholder="Repeat new password"/>
+                <button type="button" class="eye-btn"
+                        (click)="hidePw = !hidePw">
+                  <mat-icon>
+                    {{ hidePw ? 'visibility_off' : 'visibility' }}
+                  </mat-icon>
+                </button>
+              </div>
+              <span class="field-err"
+                    *ngIf="passwordForm.hasError('mismatch')
+                           && passwordForm.get('confirm')?.touched">
+                Passwords do not match
+              </span>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn-primary"
+                      [disabled]="savingPw">
+                <mat-icon *ngIf="!savingPw">lock</mat-icon>
+                <mat-icon *ngIf="savingPw" class="spin">
+                  autorenew
+                </mat-icon>
+                {{ savingPw ? 'Updating…' : 'Update password' }}
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+      <!-- App preferences -->
+      <div class="lv-card">
+        <div class="card-header">
+          <h3>App preferences</h3>
+        </div>
+        <div class="card-body">
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <div class="pref-title">Speed limit alerts</div>
+              <div class="pref-sub">
+                Alert when truck exceeds 90 km/h
+              </div>
+            </div>
+            <mat-slide-toggle [checked]="true" color="accent">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <div class="pref-title">Fuel theft alerts</div>
+              <div class="pref-sub">
+                Alert on sudden fuel drops over 20L
+              </div>
+            </div>
+            <mat-slide-toggle [checked]="true" color="accent">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <div class="pref-title">SMS notifications</div>
+              <div class="pref-sub">
+                Receive critical alerts via SMS
+              </div>
+            </div>
+            <mat-slide-toggle [checked]="false" color="accent">
+            </mat-slide-toggle>
+          </div>
+
+          <div class="pref-row">
+            <div class="pref-info">
+              <div class="pref-title">Geofence breach alerts</div>
+              <div class="pref-sub">
+                Alert when truck leaves assigned route
+              </div>
+            </div>
+            <mat-slide-toggle [checked]="true" color="accent">
+            </mat-slide-toggle>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
