@@ -29,8 +29,8 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
 
   state: PaymentState = 'form';
   checkoutRequestId   = '';
-  statusMessage        = '';
-  receiptNumber        = '';
+  statusMessage       = '';
+  receiptNumber       = '';
 
   private pollSub?: Subscription;
   private pollCount = 0;
@@ -61,7 +61,9 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.pollSub?.unsubscribe();
+    if (this.pollSub) {
+      this.pollSub.unsubscribe();
+    }
   }
 
   onSubmit(): void {
@@ -86,9 +88,9 @@ export class PaymentFormComponent implements OnInit, OnDestroy {
               this.state = 'waiting_pin';
               this.startPolling();
             },
-            error: () => {
+            error: (err) => {
               this.state = 'failed';
-              this.statusMessage = 'Could not send payment prompt. Try again.';
+              this.statusMessage = err.error?.details || 'Could not send payment prompt. Try again.';
             }
           });
         },

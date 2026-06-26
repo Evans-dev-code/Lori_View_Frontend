@@ -1,13 +1,11 @@
 <div class="page-container">
 
-  <!-- Sending request -->
   <div class="status-view" *ngIf="state === 'sending'">
     <div class="sv-icon spin">⏳</div>
     <h2>Sending payment request…</h2>
     <p>Please wait a moment.</p>
   </div>
 
-  <!-- Waiting for PIN -->
   <div class="status-view" *ngIf="state === 'waiting_pin'">
     <div class="sv-icon pulse">📱</div>
     <h2>Check your phone</h2>
@@ -22,7 +20,6 @@
     <p class="status-sub">{{ statusMessage }}</p>
   </div>
 
-  <!-- Success -->
   <div class="status-view success" *ngIf="state === 'success'">
     <div class="sv-icon">✅</div>
     <h2>Payment successful!</h2>
@@ -33,13 +30,12 @@
       <span>M-Pesa receipt</span>
       <strong>{{ receiptNumber }}</strong>
     </div>
-    <button class="btn-primary" (click)="goToDashboard()">
+    <button class="btn-primary" (click)="goToDashboard()" style="margin-top: 15px;">
       <mat-icon>dashboard</mat-icon>
       Go to dashboard
     </button>
   </div>
 
-  <!-- Failed / cancelled -->
   <div class="status-view failed" *ngIf="state === 'failed'">
     <div class="sv-icon">❌</div>
     <h2>Payment not completed</h2>
@@ -55,7 +51,6 @@
     </div>
   </div>
 
-  <!-- Timeout -->
   <div class="status-view timeout" *ngIf="state === 'timeout'">
     <div class="sv-icon">⏱️</div>
     <h2>Still waiting…</h2>
@@ -75,7 +70,6 @@
     </div>
   </div>
 
-  <!-- Payment form -->
   <ng-container *ngIf="state === 'form'">
 
     <div class="page-header">
@@ -103,6 +97,10 @@
               <span class="field-err" *ngIf="phoneError()">
                 {{ phoneError() }}
               </span>
+              <div class="field-hint">
+                Enter the number registered to your M-Pesa account.
+                Supports Safaricom numbers only.
+              </div>
             </div>
             <button type="submit" class="btn-primary pay-btn">
               <mat-icon>phone_android</mat-icon>
@@ -123,12 +121,20 @@
             <span>Trucks included</span>
             <span class="os-val">{{ trucks }}</span>
           </div>
+          <div class="os-row">
+            <span>Billing</span>
+            <span class="os-val">Monthly</span>
+          </div>
           <div class="os-divider"></div>
           <div class="os-row total">
             <span>Total due today</span>
             <span class="os-total">
               KES {{ amountKes | number:'1.0-0' }}
             </span>
+          </div>
+          <div class="os-note">
+            You'll be charged again in 30 days.
+            Cancel anytime from your subscription page.
           </div>
         </div>
       </div>
