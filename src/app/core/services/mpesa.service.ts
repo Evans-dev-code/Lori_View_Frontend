@@ -76,4 +76,10 @@ export class MpesaService {
     `${this.api}/subscriptions/owner/${ownerId}/active`
   );
 }
+
+getPaymentStatus(checkoutRequestId: string): Observable<any> {
+  return this.http.get<any>(
+    `${this.api}/mpesa/status/${checkoutRequestId}`
+  );
+}
 }
